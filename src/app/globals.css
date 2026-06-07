@@ -1,33 +1,61 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");
 @import "tailwindcss";
 
+/* ── Dark theme (default) ──────────────────────────────────────── */
 @theme {
   --color-neu-bg: #0f172a;
-  --color-neu-bg-light: #e2e8f0;
   --color-neu-surface: #1e293b;
-  --color-neu-surface-light: #f1f5f9;
   --color-neu-accent: #38bdf8;
   --color-neu-accent-dark: #0284c7;
   --color-neu-success: #10b981;
   --color-neu-text: #f3f4f6;
   --color-neu-text-muted: #64748b;
-  --color-neu-text-light: #1e293b;
 
   --shadow-neu-raised: 8px 8px 16px #080d18, -8px -8px 16px #16213c;
   --shadow-neu-inset: inset 4px 4px 8px #080d18, inset -4px -4px 8px #16213c;
-  --shadow-neu-raised-light: 8px 8px 16px #c8d0db, -8px -8px 16px #fcffff;
-  --shadow-neu-inset-light: inset 4px 4px 8px #c8d0db, inset -4px -4px 8px #fcffff;
   --shadow-neu-btn: 4px 4px 10px #080d18, -4px -4px 10px #16213c;
-  --shadow-neu-btn-light: 4px 4px 10px #c8d0db, -4px -4px 10px #fcffff;
 
   --font-sans: "Inter", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", "Fira Code", monospace;
 }
 
+/* ── CSS variables that flip with .dark / :root ────────────────── */
 :root {
+  --bg: #e2e8f0;
+  --surface: #f1f5f9;
+  --text: #1e293b;
+  --text-muted: #64748b;
+  --accent: #0284c7;
+  --shadow-raised: 8px 8px 16px #c8d0db, -8px -8px 16px #fcffff;
+  --shadow-inset: inset 4px 4px 8px #c8d0db, inset -4px -4px 8px #fcffff;
+  --shadow-btn: 4px 4px 10px #c8d0db, -4px -4px 10px #fcffff;
+  --scrollbar-thumb: #94a3b8;
+  --scrollbar-track: #e2e8f0;
+}
+
+.dark {
+  --bg: #0f172a;
+  --surface: #1e293b;
+  --text: #f3f4f6;
+  --text-muted: #64748b;
+  --accent: #38bdf8;
+  --shadow-raised: 8px 8px 16px #080d18, -8px -8px 16px #16213c;
+  --shadow-inset: inset 4px 4px 8px #080d18, inset -4px -4px 8px #16213c;
+  --shadow-btn: 4px 4px 10px #080d18, -4px -4px 10px #16213c;
   --scrollbar-thumb: #334155;
   --scrollbar-track: #0f172a;
 }
+
+/* ── Utility classes using CSS vars ────────────────────────────── */
+.th-bg        { background-color: var(--bg); }
+.th-surface   { background-color: var(--surface); }
+.th-text      { color: var(--text); }
+.th-muted     { color: var(--text-muted); }
+.th-accent    { color: var(--accent); }
+.th-raised    { box-shadow: var(--shadow-raised); }
+.th-inset     { box-shadow: var(--shadow-inset); }
+.th-btn       { box-shadow: var(--shadow-btn); }
+.th-border    { border-color: color-mix(in srgb, var(--text-muted) 25%, transparent); }
 
 * {
   scrollbar-width: thin;
@@ -36,6 +64,7 @@
 
 body {
   font-family: var(--font-sans);
-  background-color: var(--color-neu-bg);
-  color: var(--color-neu-text);
+  background-color: var(--bg);
+  color: var(--text);
+  transition: background-color 0.2s, color 0.2s;
 }
