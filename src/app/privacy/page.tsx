@@ -75,7 +75,7 @@ export default function PrivacyPage() {
             <div>
               <h2 className="text-sm font-bold th-text">Open Source Auditability</h2>
               <p className="text-xs th-muted mt-1.5 leading-relaxed">
-                Prompt Engineer is released under the open-source MIT License. You can audit the complete codebase, configuration handlers, and API connection pipelines at any time to verify that your data is safe and secured.
+                Prompt Engineer is released under the open-source Apache License 2.0. You can audit the complete codebase, configuration handlers, and API connection pipelines at any time to verify that your data is safe and secured.
               </p>
             </div>
           </div>

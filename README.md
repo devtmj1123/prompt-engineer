@@ -54,7 +54,7 @@ See [MCP_SETUP.md](file:///c:/Users/mjtan/Desktop/prompt_engineer/MCP_SETUP.md) 
 
 ## 📜 Open Source & Licensing
 
-Licensed under the [MIT License](LICENSE). 
+Licensed under the [Apache License 2.0](LICENSE). 
 
 Copyright © 2026 devtmj1123. All rights reserved.
 

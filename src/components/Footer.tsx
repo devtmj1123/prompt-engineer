@@ -20,7 +20,7 @@ export function Footer() {
           rel="noopener noreferrer"
           className="th-muted hover:th-accent transition-colors duration-150"
         >
-          MIT License
+          Apache 2.0 License
         </a>
         <Link 
           href="/privacy"
