@@ -53,7 +53,7 @@ export function NavBar() {
         </button>
 
         <a
-          href="https://github.com/mjtan/prompt-engineer"
+          href="https://github.com/devtmj1123/prompt-engineer"
           target="_blank"
           rel="noopener noreferrer"
           className="p-2 rounded-xl text-xs font-medium th-muted hover:th-accent hover:th-raised transition-all w-8 h-8 flex items-center justify-center"

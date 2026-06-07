@@ -14,7 +14,7 @@ export function Footer() {
       </div>
       <div className="flex items-center gap-4 text-xs font-semibold">
         <a 
-          href="https://github.com/mjtan/prompt-engineer/blob/main/LICENSE"
+          href="https://github.com/devtmj1123/prompt-engineer/blob/main/LICENSE"
           target="_blank"
           rel="noopener noreferrer"
           className="th-muted hover:th-accent transition-colors duration-150"
@@ -22,7 +22,7 @@ export function Footer() {
           MIT License
         </a>
         <a
-          href="https://github.com/mjtan/prompt-engineer"
+          href="https://github.com/devtmj1123/prompt-engineer"
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center gap-1.5 th-muted hover:th-accent transition-colors duration-150"

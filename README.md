@@ -56,5 +56,5 @@ See [MCP_SETUP.md](file:///c:/Users/mjtan/Desktop/prompt_engineer/MCP_SETUP.md) 
 
 Licensed under the [MIT License](LICENSE). 
 
-Copyright © 2026 mjtan. All rights reserved.
+Copyright © 2026 devtmj1123. All rights reserved.
 
