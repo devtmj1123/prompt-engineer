@@ -44,3 +44,6 @@ next-env.d.ts
 # AI Assistant config files
 AGENTS.md
 CLAUDE.md
+
+# Documentation
+/docs/
