@@ -1,6 +1,17 @@
 export type PromptCategory = "coding" | "image" | "writing" | "video";
 export type ExecutionStrategy = "sequential" | "fan_out";
-export type LLMProvider = "groq" | "cerebras" | "gemini" | "claude";
+export type LLMProvider = "groq" | "cerebras" | "gemini" | "claude" | "openai" | "deepseek";
+
+export interface TokenUsage {
+  promptTokens: number;
+  completionTokens: number;
+  totalTokens: number;
+}
+
+export interface LLMResponse {
+  text: string;
+  usage?: TokenUsage;
+}
 
 export interface PromptEngineerResult {
   optimizedPrompt: string;
@@ -10,6 +21,7 @@ export interface PromptEngineerResult {
   suggestedSubtasks?: string[];
   targetModel: string;
   category: PromptCategory;
+  usage?: TokenUsage;
 }
 
 export interface RefineRequest {
@@ -47,5 +59,6 @@ export interface KnowledgeEntry {
 }
 
 export interface LLMClient {
-  complete(systemPrompt: string, userMessage: string): Promise<string>;
+  complete(systemPrompt: string, userMessage: string): Promise<LLMResponse>;
 }
+

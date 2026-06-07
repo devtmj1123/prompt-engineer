@@ -11,10 +11,10 @@ const CATEGORY_DETECTION_PROMPT = `You are a task classifier. Given a raw user p
 Respond ONLY with valid JSON: { "category": "coding", "complexity": "simple" }`;
 
 async function detectCategory(client: LLMClient, rawPrompt: string): Promise<{ category: PromptCategory; complexity: string }> {
-  const result = await client.complete(CATEGORY_DETECTION_PROMPT, rawPrompt);
+  const response = await client.complete(CATEGORY_DETECTION_PROMPT, rawPrompt);
   try {
-    const jsonMatch = result.match(/\{[\s\S]*\}/);
-    const jsonStr = jsonMatch ? jsonMatch[0] : result;
+    const jsonMatch = response.text.match(/\{[\s\S]*\}/);
+    const jsonStr = jsonMatch ? jsonMatch[0] : response.text;
     return JSON.parse(jsonStr.trim());
   } catch {
     return { category: "coding", complexity: "simple" };
@@ -39,14 +39,16 @@ export async function engineerPrompt(request: RefineRequest): Promise<PromptEngi
 
   const userMessage = `Raw prompt to engineer:\n\n"${request.rawPrompt}"\n\nTarget model: ${targetModel}`;
 
-  const rawResult = await client.complete(systemPrompt, userMessage);
+  const response = await client.complete(systemPrompt, userMessage);
+  const rawResult = response.text;
+  const usage = response.usage;
 
   // Parse JSON response from LLM
   let parsed: PromptEngineerResult;
   try {
     const jsonMatch = rawResult.match(/\{[\s\S]*\}/);
     const jsonStr = jsonMatch ? jsonMatch[0] : rawResult;
-    parsed = { ...JSON.parse(jsonStr), targetModel, category };
+    parsed = { ...JSON.parse(jsonStr), targetModel, category, usage };
   } catch {
     // Fallback: treat entire response as the optimized prompt
     parsed = {
@@ -57,6 +59,7 @@ export async function engineerPrompt(request: RefineRequest): Promise<PromptEngi
       suggestedSubtasks: [],
       targetModel,
       category,
+      usage,
     };
   }
 
@@ -87,13 +90,15 @@ JSON format:
 
   const userMessage = `Existing Engineered Prompt:\n"""\n${request.currentPrompt}\n"""\n\nUser Edit Instruction:\n"${request.instruction}"`;
 
-  const rawResult = await client.complete(systemPrompt, userMessage);
+  const response = await client.complete(systemPrompt, userMessage);
+  const rawResult = response.text;
+  const usage = response.usage;
 
   let parsed: PromptEngineerResult;
   try {
     const jsonMatch = rawResult.match(/\{[\s\S]*\}/);
     const jsonStr = jsonMatch ? jsonMatch[0] : rawResult;
-    parsed = { ...JSON.parse(jsonStr), targetModel: request.targetModel, category: request.category };
+    parsed = { ...JSON.parse(jsonStr), targetModel: request.targetModel, category: request.category, usage };
   } catch {
     parsed = {
       optimizedPrompt: rawResult,
@@ -103,9 +108,11 @@ JSON format:
       suggestedSubtasks: [],
       targetModel: request.targetModel,
       category: request.category,
+      usage,
     };
   }
 
   return parsed;
 }
+
 

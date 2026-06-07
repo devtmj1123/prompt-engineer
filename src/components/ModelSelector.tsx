@@ -6,6 +6,8 @@ const MODELS = [
   { label: "Cerebras — Llama 3.1 70B", value: "llama3.1-70b" },
   { label: "Gemini 2.0 Flash", value: "gemini-2.0-flash" },
   { label: "Claude 3.5 Sonnet", value: "claude-3-5-sonnet-latest" },
+  { label: "OpenAI — GPT-4o", value: "gpt-4o" },
+  { label: "DeepSeek Chat", value: "deepseek-chat" },
 ];
 
 interface Props {

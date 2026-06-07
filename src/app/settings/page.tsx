@@ -11,6 +11,8 @@ const PROVIDERS = [
   { key: "cerebras", label: "Cerebras", defaultModel: "llama3.1-70b" },
   { key: "gemini", label: "Google Gemini", defaultModel: "gemini-2.0-flash" },
   { key: "claude", label: "Anthropic Claude", defaultModel: "claude-3-5-sonnet-latest" },
+  { key: "openai", label: "OpenAI", defaultModel: "gpt-4o" },
+  { key: "deepseek", label: "DeepSeek", defaultModel: "deepseek-chat" },
 ];
 
 export default function SettingsPage() {

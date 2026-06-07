@@ -1,13 +1,13 @@
 import OpenAI from "openai";
 import type { LLMClient, LLMResponse } from "@/types";
 
-export class CerebrasClient implements LLMClient {
+export class DeepSeekClient implements LLMClient {
   private client: OpenAI;
   private model: string;
 
   constructor(apiKey: string, model: string) {
-    this.client = new OpenAI({ apiKey, baseURL: "https://api.cerebras.ai/v1" });
-    this.model = model;
+    this.client = new OpenAI({ apiKey, baseURL: "https://api.deepseek.com/v1" });
+    this.model = model || "deepseek-chat";
   }
 
   async complete(systemPrompt: string, userMessage: string): Promise<LLMResponse> {
@@ -18,7 +18,7 @@ export class CerebrasClient implements LLMClient {
         { role: "user", content: userMessage },
       ],
     });
-    
+
     return {
       text: response.choices[0]?.message?.content ?? "",
       usage: response.usage ? {
@@ -29,4 +29,3 @@ export class CerebrasClient implements LLMClient {
     };
   }
 }
-

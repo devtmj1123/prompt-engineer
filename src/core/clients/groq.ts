@@ -1,5 +1,5 @@
 import OpenAI from "openai";
-import type { LLMClient } from "@/types";
+import type { LLMClient, LLMResponse } from "@/types";
 
 export class GroqClient implements LLMClient {
   private client: OpenAI;
@@ -10,7 +10,7 @@ export class GroqClient implements LLMClient {
     this.model = model;
   }
 
-  async complete(systemPrompt: string, userMessage: string): Promise<string> {
+  async complete(systemPrompt: string, userMessage: string): Promise<LLMResponse> {
     const response = await this.client.chat.completions.create({
       model: this.model,
       messages: [
@@ -18,6 +18,14 @@ export class GroqClient implements LLMClient {
         { role: "user", content: userMessage },
       ],
     });
-    return response.choices[0]?.message?.content ?? "";
+    
+    return {
+      text: response.choices[0]?.message?.content ?? "",
+      usage: response.usage ? {
+        promptTokens: response.usage.prompt_tokens,
+        completionTokens: response.usage.completion_tokens,
+        totalTokens: response.usage.total_tokens,
+      } : undefined
+    };
   }
 }

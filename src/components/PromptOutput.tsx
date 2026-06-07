@@ -2,7 +2,7 @@
 import type { PromptEngineerResult } from "@/types";
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCopy, faCheck, faLightbulb, faWandMagicSparkles, faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { faCopy, faCheck, faLightbulb, faWandMagicSparkles, faSpinner, faBatteryFull } from "@fortawesome/free-solid-svg-icons";
 
 interface Props {
   result: PromptEngineerResult | null;
@@ -56,9 +56,17 @@ export function PromptOutput({ result, loading, refining = false, onRefine }: Pr
   return (
     <div className="flex flex-col gap-4 anim-fade-up">
       <div className="flex justify-between items-center">
-        <span className="text-xs font-bold uppercase tracking-widest th-muted">
-          Engineered Prompt
-        </span>
+        <div className="flex items-center gap-3">
+          <span className="text-xs font-bold uppercase tracking-widest th-muted">
+            Engineered Prompt
+          </span>
+          {result.usage && (
+            <span className="text-[10px] px-2 py-0.5 rounded-full th-inset th-text flex items-center gap-1 opacity-70">
+              <FontAwesomeIcon icon={faBatteryFull} className="w-2.5 h-2.5" />
+              {result.usage.totalTokens} tokens
+            </span>
+          )}
+        </div>
         <button
           onClick={handleCopy}
           className="text-xs px-3 py-2 rounded-lg th-btn th-bg th-accent

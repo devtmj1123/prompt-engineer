@@ -1,5 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
-import type { LLMClient } from "@/types";
+import type { LLMClient, LLMResponse } from "@/types";
 
 export class ClaudeClient implements LLMClient {
   private client: Anthropic;
@@ -10,7 +10,7 @@ export class ClaudeClient implements LLMClient {
     this.model = model;
   }
 
-  async complete(systemPrompt: string, userMessage: string): Promise<string> {
+  async complete(systemPrompt: string, userMessage: string): Promise<LLMResponse> {
     const response = await this.client.messages.create({
       model: this.model,
       max_tokens: 2048,
@@ -18,6 +18,15 @@ export class ClaudeClient implements LLMClient {
       messages: [{ role: "user", content: userMessage }],
     });
     const block = response.content[0];
-    return block.type === "text" ? block.text : "";
+    
+    return {
+      text: block.type === "text" ? block.text : "",
+      usage: response.usage ? {
+        promptTokens: response.usage.input_tokens ?? 0,
+        completionTokens: response.usage.output_tokens ?? 0,
+        totalTokens: (response.usage.input_tokens ?? 0) + (response.usage.output_tokens ?? 0),
+      } : undefined
+    };
   }
 }
+

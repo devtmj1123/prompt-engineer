@@ -10,6 +10,8 @@ const DEFAULT_CONFIG: AppConfig = {
     cerebras: { apiKey: "", model: "llama3.1-70b" },
     gemini: { apiKey: "", model: "gemini-2.0-flash" },
     claude: { apiKey: "", model: "claude-3-5-sonnet-latest" },
+    openai: { apiKey: "", model: "gpt-4o" },
+    deepseek: { apiKey: "", model: "deepseek-chat" },
   },
 };
 
@@ -30,6 +32,8 @@ export function readConfig(): AppConfig {
     if (process.env.CEREBRAS_API_KEY) config.providers.cerebras.apiKey = process.env.CEREBRAS_API_KEY;
     if (process.env.GEMINI_API_KEY) config.providers.gemini.apiKey = process.env.GEMINI_API_KEY;
     if (process.env.ANTHROPIC_API_KEY) config.providers.claude.apiKey = process.env.ANTHROPIC_API_KEY;
+    if (process.env.OPENAI_API_KEY) config.providers.openai.apiKey = process.env.OPENAI_API_KEY;
+    if (process.env.DEEPSEEK_API_KEY) config.providers.deepseek.apiKey = process.env.DEEPSEEK_API_KEY;
     if (process.env.DEFAULT_PROVIDER) config.defaultProvider = process.env.DEFAULT_PROVIDER as LLMProvider;
     return config;
   }
