@@ -18,8 +18,7 @@ export function NavBar() {
   ];
 
   return (
-    <nav className="flex items-center justify-between px-6 py-3
-      th-surface th-raised rounded-2xl mx-4 mt-4 transition-all duration-200">
+    <nav className="flex items-center justify-between px-6 py-3 th-surface th-raised rounded-2xl mx-4 mt-4 transition-all duration-200 anim-fade-down">
       <Link href="/" className="flex items-center gap-2 text-sm font-bold th-accent tracking-tight hover:opacity-80 transition-opacity">
         <FontAwesomeIcon icon={faBrain} className="w-4 h-4" />
         <span>Prompt Engineer</span>
@@ -31,7 +30,7 @@ export function NavBar() {
             <Link
               key={link.href}
               href={link.href}
-              className={`text-xs px-4 py-2 rounded-xl font-medium transition-all flex items-center gap-1.5 ${
+              className={`text-xs px-4 py-2 rounded-xl font-medium transition-all flex items-center gap-1.5 btn-press ${
                 pathname === link.href
                   ? "th-inset th-accent"
                   : "th-muted hover:th-accent hover:th-raised"
@@ -47,7 +46,7 @@ export function NavBar() {
 
         <button
           onClick={toggle}
-          className="p-2 rounded-xl text-xs font-medium th-muted hover:th-accent hover:th-raised transition-all w-8 h-8 flex items-center justify-center cursor-pointer"
+          className="p-2 rounded-xl text-xs font-medium th-muted hover:th-accent hover:th-raised transition-all w-8 h-8 flex items-center justify-center cursor-pointer btn-press"
           title={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
         >
           <FontAwesomeIcon icon={theme === "dark" ? faSun : faMoon} className="w-4 h-4" />
@@ -57,7 +56,7 @@ export function NavBar() {
           href="https://github.com/devtmj1123/prompt-engineer"
           target="_blank"
           rel="noopener noreferrer"
-          className="p-2 rounded-xl text-xs font-medium th-muted hover:th-accent hover:th-raised transition-all w-8 h-8 flex items-center justify-center"
+          className="p-2 rounded-xl text-xs font-medium th-muted hover:th-accent hover:th-raised transition-all w-8 h-8 flex items-center justify-center btn-press"
           title="View on GitHub"
         >
           <FontAwesomeIcon icon={faGithub} className="w-4 h-4" />

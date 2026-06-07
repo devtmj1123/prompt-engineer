@@ -11,7 +11,7 @@ export default function PrivacyPage() {
       <main className="flex-1 p-4 max-w-3xl mx-auto w-full mt-4 flex flex-col gap-6">
         
         {/* Main Panel */}
-        <div className="th-bg th-raised rounded-2xl p-8 flex flex-col gap-6">
+        <div className="th-bg th-raised rounded-2xl p-8 flex flex-col gap-6 anim-fade-up">
           <div className="border-b th-border pb-4">
             <h1 className="text-xl font-bold th-text flex items-center gap-2">
               <FontAwesomeIcon icon={faShieldHalved} className="w-5 h-5 th-accent" />
@@ -23,7 +23,7 @@ export default function PrivacyPage() {
           </div>
 
           {/* Section 1 */}
-          <div className="flex gap-4 items-start">
+          <div className="flex gap-4 items-start anim-fade-up anim-delay-1">
             <div className="p-3 rounded-xl th-surface th-raised text-blue-500 dark:text-sky-400 shrink-0">
               <FontAwesomeIcon icon={faDatabase} className="w-5 h-5" />
             </div>
@@ -39,7 +39,7 @@ export default function PrivacyPage() {
           </div>
 
           {/* Section 2 */}
-          <div className="flex gap-4 items-start">
+          <div className="flex gap-4 items-start anim-fade-up anim-delay-2">
             <div className="p-3 rounded-xl th-surface th-raised text-emerald-500 shrink-0">
               <FontAwesomeIcon icon={faKey} className="w-5 h-5" />
             </div>
@@ -55,7 +55,7 @@ export default function PrivacyPage() {
           </div>
 
           {/* Section 3 */}
-          <div className="flex gap-4 items-start">
+          <div className="flex gap-4 items-start anim-fade-up anim-delay-3">
             <div className="p-3 rounded-xl th-surface th-raised text-amber-500 shrink-0">
               <FontAwesomeIcon icon={faShieldHalved} className="w-5 h-5" />
             </div>
@@ -68,7 +68,7 @@ export default function PrivacyPage() {
           </div>
 
           {/* Section 4 */}
-          <div className="flex gap-4 items-start">
+          <div className="flex gap-4 items-start anim-fade-up anim-delay-4">
             <div className="p-3 rounded-xl th-surface th-raised text-purple-500 shrink-0">
               <FontAwesomeIcon icon={faCode} className="w-5 h-5" />
             </div>
@@ -79,6 +79,7 @@ export default function PrivacyPage() {
               </p>
             </div>
           </div>
+
 
           <div className="mt-4 p-4 rounded-xl bg-slate-500/5 dark:bg-slate-300/5 border th-border text-[11px] th-muted leading-relaxed">
             <p className="font-semibold th-text mb-1">Last updated: June 2026</p>

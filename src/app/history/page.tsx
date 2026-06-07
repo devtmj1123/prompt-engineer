@@ -135,7 +135,7 @@ export default function HistoryPage() {
       <main className="flex-1 p-4 max-w-4xl mx-auto w-full mt-4 flex flex-col gap-4">
         
         {/* Header and Controls */}
-        <div className="th-bg th-raised rounded-2xl p-6 flex flex-col gap-4">
+        <div className="th-bg th-raised rounded-2xl p-6 flex flex-col gap-4 anim-fade-up">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <h1 className="text-lg font-bold th-text flex items-center gap-2">
@@ -150,7 +150,7 @@ export default function HistoryPage() {
             <div className="flex flex-wrap gap-2">
               <button
                 onClick={handleExport}
-                className="px-4 py-2.5 rounded-xl text-xs font-semibold th-bg th-btn th-accent
+                className="px-4 py-2.5 rounded-xl text-xs font-semibold th-bg th-btn th-accent btn-press
                   hover:bg-[var(--accent)] hover:text-white hover:shadow-none transition-all flex items-center gap-1.5 cursor-pointer"
                 title="Export history backup"
               >
@@ -160,7 +160,7 @@ export default function HistoryPage() {
               
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="px-4 py-2.5 rounded-xl text-xs font-semibold th-bg th-btn th-accent
+                className="px-4 py-2.5 rounded-xl text-xs font-semibold th-bg th-btn th-accent btn-press
                   hover:bg-[var(--accent)] hover:text-white hover:shadow-none transition-all flex items-center gap-1.5 cursor-pointer"
                 title="Import history backup"
               >
@@ -178,7 +178,7 @@ export default function HistoryPage() {
               {entries.length > 0 && (
                 <button
                   onClick={handleClearAll}
-                  className={`px-4 py-2.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer ${
+                  className={`px-4 py-2.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer btn-press ${
                     confirmClear 
                       ? "bg-red-600 text-white hover:bg-red-700 shadow-none animate-pulse" 
                       : "text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 hover:bg-red-500/10"
@@ -206,15 +206,16 @@ export default function HistoryPage() {
         {/* Entries List */}
         <div className="flex flex-col gap-4">
           {entries.length === 0 ? (
-            <div className="th-bg th-raised rounded-2xl p-12 text-center th-muted text-sm">
+            <div className="th-bg th-raised rounded-2xl p-12 text-center th-muted text-sm anim-fade-up">
               <FontAwesomeIcon icon={faClockRotateLeft} className="w-8 h-8 opacity-30 mb-3 mx-auto" />
               <p>No prompt history found. Try engineering prompts in the workspace!</p>
             </div>
           ) : (
-            entries.map((entry) => (
+            entries.map((entry, index) => (
               <div 
                 key={entry.id} 
-                className="th-bg th-raised rounded-2xl p-5 flex flex-col gap-4 transition-all duration-200"
+                className="th-bg th-raised rounded-2xl p-5 flex flex-col gap-4 transition-all duration-200 card-hover anim-fade-up"
+                style={{ animationDelay: `${index * 0.05}s` }}
               >
                 <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b th-border pb-3">
                   <div className="flex items-center gap-2 flex-wrap text-xs">
@@ -232,7 +233,7 @@ export default function HistoryPage() {
                   <div className="flex items-center gap-2 justify-end">
                     <button
                       onClick={() => handleLoadWorkspace(entry)}
-                      className="px-3 py-1.5 rounded-lg text-xs font-semibold th-btn th-bg th-accent
+                      className="px-3 py-1.5 rounded-lg text-xs font-semibold th-btn th-bg th-accent btn-press
                         hover:bg-[var(--accent)] hover:text-white transition-all flex items-center gap-1 cursor-pointer"
                       title="Load this state in the Workspace"
                     >
@@ -243,7 +244,7 @@ export default function HistoryPage() {
                     
                     <button
                       onClick={() => handleDelete(entry.id)}
-                      className="p-1.5 rounded-lg text-red-500 hover:text-red-700
+                      className="p-1.5 rounded-lg text-red-500 hover:text-red-700 btn-press
                         dark:text-red-400 dark:hover:text-red-300 hover:bg-red-500/10 transition-all cursor-pointer"
                       title="Delete entry"
                     >
@@ -251,6 +252,7 @@ export default function HistoryPage() {
                     </button>
                   </div>
                 </div>
+
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* Left Column — Raw Prompt & Custom Inst */}

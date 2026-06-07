@@ -6,7 +6,7 @@ import { faCode } from "@fortawesome/free-solid-svg-icons";
 
 export function Footer() {
   return (
-    <footer className="mt-8 mb-6 mx-4 px-6 py-4 th-surface th-raised rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 transition-all duration-200">
+    <footer className="mt-8 mb-6 mx-4 px-6 py-4 th-surface th-raised rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 transition-all duration-200 anim-fade-up anim-delay-3">
       <div className="text-xs th-muted flex items-center gap-1.5 font-medium">
         <FontAwesomeIcon icon={faCode} className="th-accent" />
         <span>

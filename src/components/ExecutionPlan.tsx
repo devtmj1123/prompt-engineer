@@ -29,13 +29,13 @@ export function ExecutionPlan({ result }: Props) {
   if (!result || (!result.requiredTools.length && !result.suggestedSubtasks?.length)) return null;
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3 anim-fade-up">
       <p className="text-xs font-bold uppercase tracking-widest th-muted">
         Execution Plan
       </p>
 
       {result.requiredTools.length > 0 && (
-        <div className="th-bg th-raised rounded-xl p-4">
+        <div className="th-bg th-raised rounded-xl p-4 anim-fade-up anim-delay-1">
           <p className="text-xs font-semibold th-muted mb-2">Required Tools</p>
           <div className="flex flex-wrap gap-2">
             {result.requiredTools.map((tool) => (
@@ -50,7 +50,7 @@ export function ExecutionPlan({ result }: Props) {
       )}
 
       {result.suggestedSubtasks && result.suggestedSubtasks.length > 0 && (
-        <div className="th-bg th-raised rounded-xl p-4">
+        <div className="th-bg th-raised rounded-xl p-4 anim-fade-up anim-delay-1">
           <div className="flex items-center gap-2 mb-3">
             <p className="text-xs font-semibold th-muted">Strategy:</p>
             <span className={`text-xs px-2.5 py-0.5 rounded-full font-bold flex items-center gap-1.5 ${

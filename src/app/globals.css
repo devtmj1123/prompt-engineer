@@ -69,6 +69,98 @@ body {
   transition: background-color 0.2s, color 0.2s;
 }
 
+/* ── Animation keyframes ────────────────────────────────────────── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInLeft {
+  from { opacity: 0; transform: translateX(-20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeInRight {
+  from { opacity: 0; transform: translateX(20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.92); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slideDown {
+  from { opacity: 0; max-height: 0; transform: translateY(-8px); }
+  to   { opacity: 1; max-height: 600px; transform: translateY(0); }
+}
+
+@keyframes popIn {
+  0%   { opacity: 0; transform: scale(0.85); }
+  70%  { transform: scale(1.04); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.6; }
+}
+
+/* ── Animation utility classes ──────────────────────────────────── */
+.anim-fade-up   { animation: fadeInUp   0.45s cubic-bezier(0.22,1,0.36,1) both; }
+.anim-fade-down { animation: fadeInDown 0.4s  cubic-bezier(0.22,1,0.36,1) both; }
+.anim-fade-left { animation: fadeInLeft 0.45s cubic-bezier(0.22,1,0.36,1) both; }
+.anim-fade-right{ animation: fadeInRight 0.45s cubic-bezier(0.22,1,0.36,1) both; }
+.anim-fade      { animation: fadeIn     0.4s  ease both; }
+.anim-scale-in  { animation: scaleIn    0.35s cubic-bezier(0.22,1,0.36,1) both; }
+.anim-pop-in    { animation: popIn      0.4s  cubic-bezier(0.22,1,0.36,1) both; }
+.anim-slide-down{ animation: slideDown  0.35s cubic-bezier(0.22,1,0.36,1) both; }
+
+/* Stagger delays */
+.anim-delay-1 { animation-delay: 0.05s; }
+.anim-delay-2 { animation-delay: 0.10s; }
+.anim-delay-3 { animation-delay: 0.15s; }
+.anim-delay-4 { animation-delay: 0.20s; }
+.anim-delay-5 { animation-delay: 0.25s; }
+.anim-delay-6 { animation-delay: 0.30s; }
+.anim-delay-7 { animation-delay: 0.35s; }
+.anim-delay-8 { animation-delay: 0.40s; }
+
+/* Button press effect */
+.btn-press {
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+.btn-press:active { transform: scale(0.96); }
+
+/* Card hover lift */
+.card-hover {
+  transition: transform 0.25s cubic-bezier(0.22,1,0.36,1), box-shadow 0.25s ease;
+}
+.card-hover:hover { transform: translateY(-2px); }
+
+/* Shimmer loading */
+.shimmer {
+  background: linear-gradient(90deg, transparent 0%, color-mix(in srgb, var(--accent) 12%, transparent) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.6s infinite;
+}
+
+
 /* ── Neumorphic select ──────────────────────────────────────────── */
 .neu-select-wrapper {
   position: relative;

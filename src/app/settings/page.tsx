@@ -4,6 +4,7 @@ import { NavBar } from "@/components/NavBar";
 import { Footer } from "@/components/Footer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGear, faFloppyDisk, faCheck } from "@fortawesome/free-solid-svg-icons";
+import { CustomSelect } from "@/components/CustomSelect";
 
 const PROVIDERS = [
   { key: "groq", label: "Groq", defaultModel: "llama-3.3-70b-versatile" },
@@ -44,31 +45,25 @@ export default function SettingsPage() {
     setTimeout(() => setSaved(false), 2000);
   }
 
+  const selectOptions = PROVIDERS.map((p) => ({ label: p.label, value: p.key }));
+
   return (
     <div className="min-h-screen flex flex-col">
       <NavBar />
       <main className="flex-1 p-4 max-w-2xl mx-auto w-full mt-4 flex flex-col gap-4">
-        <div className="th-bg th-raised rounded-2xl p-6 flex flex-col gap-5">
+        <div className="th-bg th-raised rounded-2xl p-6 flex flex-col gap-5 anim-fade-up">
           <h1 className="text-lg font-bold th-text flex items-center gap-2">
             <FontAwesomeIcon icon={faGear} className="w-4 h-4 th-accent" />
             <span>Settings</span>
           </h1>
 
           <div>
-            <label className="block text-xs font-bold uppercase tracking-widest th-muted mb-2">
-              Default Provider
-            </label>
-            <div className="neu-select-wrapper">
-              <select
-                value={defaultProvider}
-                onChange={(e) => setDefaultProvider(e.target.value)}
-                className="neu-select"
-              >
-                {PROVIDERS.map((p) => (
-                  <option key={p.key} value={p.key}>{p.label}</option>
-                ))}
-              </select>
-            </div>
+            <CustomSelect
+              label="Default Provider"
+              options={selectOptions}
+              value={defaultProvider}
+              onChange={setDefaultProvider}
+            />
           </div>
 
           {PROVIDERS.map((p) => (

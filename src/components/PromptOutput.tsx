@@ -54,7 +54,7 @@ export function PromptOutput({ result, loading, refining = false, onRefine }: Pr
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 anim-fade-up">
       <div className="flex justify-between items-center">
         <span className="text-xs font-bold uppercase tracking-widest th-muted">
           Engineered Prompt
@@ -62,14 +62,14 @@ export function PromptOutput({ result, loading, refining = false, onRefine }: Pr
         <button
           onClick={handleCopy}
           className="text-xs px-3 py-2 rounded-lg th-btn th-bg th-accent
-            hover:bg-[var(--accent)] hover:text-white hover:shadow-none transition-all font-semibold flex items-center gap-1.5 cursor-pointer"
+            hover:bg-[var(--accent)] hover:text-white hover:shadow-none transition-all font-semibold flex items-center gap-1.5 cursor-pointer btn-press"
         >
           <FontAwesomeIcon icon={copied ? faCheck : faCopy} className="w-3.5 h-3.5" />
           <span>{copied ? "Copied!" : "Copy"}</span>
         </button>
       </div>
 
-      <pre className="th-bg th-inset rounded-xl p-4 font-mono text-xs
+      <pre className="th-bg th-inset rounded-xl p-4 font-mono text-xs anim-scale-in
         text-emerald-600 dark:text-emerald-400 overflow-auto max-h-64 leading-relaxed whitespace-pre-wrap">
         {result.optimizedPrompt}
       </pre>
@@ -87,7 +87,7 @@ export function PromptOutput({ result, loading, refining = false, onRefine }: Pr
           </div>
 
           {showRefineInput && (
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2 anim-slide-down">
               <textarea
                 value={refineInstruction}
                 onChange={(e) => setRefineInstruction(e.target.value)}
@@ -99,7 +99,7 @@ export function PromptOutput({ result, loading, refining = false, onRefine }: Pr
                 <button
                   onClick={handleSubmitRefine}
                   disabled={refining || !refineInstruction.trim()}
-                  className="text-xs px-3 py-2 rounded-lg th-btn th-bg th-accent hover:bg-[var(--accent)] hover:text-white hover:shadow-none transition-all font-semibold flex items-center gap-1.5 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="text-xs px-3 py-2 rounded-lg th-btn th-bg th-accent hover:bg-[var(--accent)] hover:text-white hover:shadow-none transition-all font-semibold flex items-center gap-1.5 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed btn-press"
                 >
                   {refining ? (
                     <>
@@ -119,7 +119,7 @@ export function PromptOutput({ result, loading, refining = false, onRefine }: Pr
         </div>
       )}
 
-      <div className="th-bg th-raised rounded-xl p-4">
+      <div className="th-bg th-raised rounded-xl p-4 anim-fade-up anim-delay-2">
         <p className="text-xs font-bold uppercase tracking-widest th-accent mb-2 flex items-center gap-1.5">
           <FontAwesomeIcon icon={faLightbulb} className="w-3.5 h-3.5" />
           <span>Why This Works</span>

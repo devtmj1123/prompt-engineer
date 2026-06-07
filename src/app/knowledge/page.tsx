@@ -113,7 +113,7 @@ export default function KnowledgePage() {
       <main className="flex-1 p-4 max-w-3xl mx-auto w-full mt-4 flex flex-col gap-4">
 
         {/* ── Add Panel ─────────────────────────────────────────── */}
-        <div className="th-bg th-raised rounded-2xl p-6 flex flex-col gap-4">
+        <div className="th-bg th-raised rounded-2xl p-6 flex flex-col gap-4 anim-fade-up">
           <div>
             <h1 className="text-lg font-bold th-text flex items-center gap-2">
               <FontAwesomeIcon icon={faBook} className="w-4 h-4 th-accent" />
@@ -128,7 +128,7 @@ export default function KnowledgePage() {
           <div className="flex gap-2">
             <button
               onClick={() => setTab("github")}
-              className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+              className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer btn-press ${
                 tab === "github"
                   ? "th-inset th-accent"
                   : "th-raised th-muted hover:th-accent"
@@ -139,7 +139,7 @@ export default function KnowledgePage() {
             </button>
             <button
               onClick={() => setTab("upload")}
-              className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+              className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer btn-press ${
                 tab === "upload"
                   ? "th-inset th-accent"
                   : "th-raised th-muted hover:th-accent"
@@ -171,7 +171,7 @@ export default function KnowledgePage() {
                 <button
                   onClick={handleAddGitHub}
                   disabled={githubLoading || !githubUrl.trim()}
-                  className="px-5 py-2.5 rounded-xl text-sm font-semibold
+                  className="px-5 py-2.5 rounded-xl text-sm font-semibold btn-press
                     th-bg th-btn th-accent
                     hover:bg-[var(--accent)] hover:text-white transition-all
                     disabled:opacity-40 flex items-center justify-center gap-1.5 cursor-pointer"
@@ -259,10 +259,11 @@ export default function KnowledgePage() {
               {entries.length} indexed source{entries.length !== 1 ? "s" : ""}
             </p>
           )}
-          {entries.map((entry) => (
+          {entries.map((entry, index) => (
             <div
               key={entry.id}
-              className="th-bg th-raised rounded-2xl p-4 flex items-center justify-between gap-4"
+              className="th-bg th-raised rounded-2xl p-4 flex items-center justify-between gap-4 card-hover anim-fade-up"
+              style={{ animationDelay: `${index * 0.07}s` }}
             >
               <div className="flex items-start gap-3 min-w-0">
                 <FontAwesomeIcon 
@@ -279,7 +280,7 @@ export default function KnowledgePage() {
               </div>
               <button
                 onClick={() => handleDelete(entry.id)}
-                className="text-xs px-3 py-2 rounded-lg text-red-500 hover:text-red-700
+                className="text-xs px-3 py-2 rounded-lg text-red-500 hover:text-red-700 btn-press
                   dark:text-red-400 dark:hover:text-red-300 hover:bg-red-500/10 transition-all shrink-0 flex items-center gap-1 cursor-pointer font-semibold"
               >
                 <FontAwesomeIcon icon={faTrash} className="w-3 h-3" />

@@ -118,7 +118,7 @@ export default function WorkspacePage() {
       <NavBar />
       <main className="flex-1 p-4 grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
         {/* Left Pane — Input */}
-        <div className="th-bg th-raised rounded-2xl p-6 flex flex-col gap-5">
+        <div className="th-bg th-raised rounded-2xl p-6 flex flex-col gap-5 anim-fade-left">
           <div>
             <h1 className="text-lg font-bold th-text mb-1">Prompt Engineer</h1>
             <p className="text-xs th-muted">
@@ -166,7 +166,7 @@ export default function WorkspacePage() {
             disabled={loading || refining || !rawPrompt.trim()}
             className="w-full py-3 rounded-xl font-semibold text-sm transition-all
               th-bg th-btn th-accent hover:bg-[var(--accent)] hover:text-white hover:shadow-none
-              disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
+              disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer btn-press"
           >
             {loading ? (
               <>
@@ -183,7 +183,7 @@ export default function WorkspacePage() {
         </div>
 
         {/* Right Pane — Output */}
-        <div className="th-bg th-raised rounded-2xl p-6 flex flex-col gap-5">
+        <div className="th-bg th-raised rounded-2xl p-6 flex flex-col gap-5 anim-fade-right anim-delay-1">
           <PromptOutput 
             result={result} 
             loading={loading} 

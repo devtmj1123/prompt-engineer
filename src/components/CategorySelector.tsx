@@ -24,7 +24,7 @@ export function CategorySelector({ value, onChange }: Props) {
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
         <button
           onClick={() => onChange("auto")}
-          className={`rounded-xl px-3 py-2.5 text-xs font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+          className={`rounded-xl px-3 py-2.5 text-xs font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer btn-press ${
             value === "auto"
               ? "th-inset th-accent"
               : "th-surface th-muted th-raised hover:th-accent"
@@ -37,7 +37,7 @@ export function CategorySelector({ value, onChange }: Props) {
           <button
             key={cat.value}
             onClick={() => onChange(cat.value)}
-            className={`rounded-xl px-3 py-2.5 text-xs font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+            className={`rounded-xl px-3 py-2.5 text-xs font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer btn-press ${
               value === cat.value
                 ? "th-inset th-accent"
                 : "th-surface th-muted th-raised hover:th-accent"
