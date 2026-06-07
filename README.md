@@ -1,36 +1,60 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Prompt Engineer 🧠
 
-## Getting Started
+A professional, model-specific prompt engineering orchestration engine and hybrid app. It helps you design and refine natural language prompts into optimized instructions tailored specifically for target LLMs, with custom guidelines, structural strategies, and external context.
 
-First, run the development server:
+Powered by Next.js 16 (App Router + Tailwind CSS v4), TypeScript, Groq, Cerebras, Google Gemini, and Anthropic Claude.
 
+---
+
+## 🚀 Features
+
+- **Dashboard Workspace**: Beautiful, premium neumorphic UI with smooth transitions supporting both **Light Mode** and **Dark Mode**.
+- **Model-Specific Optimization**: Tailors outputs to structural patterns preferred by Groq, Cerebras, Gemini, and Claude.
+- **Knowledge Base & Skills**: Upload text files or fetch from public GitHub repositories (up to 50 markdown/txt/yaml files) to serve as prompt context.
+- **Category Strategies**: Specialized instruction sets for Coding, Images, Writing, and Video generation.
+- **Execution Plans**: Outlines the tools required and suggested strategies (Sequential vs. Fan-Out subagents) to complete the engineered prompt's goal.
+- **CLI Binary**: Run `prompt-eng` commands from the terminal to refine prompts, update settings, search knowledge bases, or spin up the web dashboard.
+- **MCP Server Protocol**: Zero-install stdio MCP server for agentic workspaces (like Claude Desktop) to request prompt optimization tools.
+
+---
+
+## 🛠️ Getting Started
+
+### 1. Setup API Keys
+Before running, copy `.env.example` to `.env` and configure your API keys (Groq is set as default):
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cp .env.example .env
+```
+Or use the dashboard Settings tab, or the CLI tool:
+```bash
+npm run cli config set groq API_KEY
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Run the Web Dashboard
+Start the development server:
+```bash
+npm run dev
+```
+Open [http://localhost:3000](http://localhost:3000) with your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 3. Run the CLI
+Optimizing a prompt via terminal:
+```bash
+npm run cli "React login form" -- -m llama-3.3-70b-versatile
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 4. Run MCP Server
+To start the Model Context Protocol stdio server:
+```bash
+npm run mcp
+```
+See [MCP_SETUP.md](file:///c:/Users/mjtan/Desktop/prompt_engineer/MCP_SETUP.md) for full configuration guidelines.
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 📜 Open Source & Licensing
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Licensed under the [MIT License](LICENSE). 
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Copyright © 2026 mjtan. All rights reserved.
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

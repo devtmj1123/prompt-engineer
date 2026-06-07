@@ -1,6 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
 import { NavBar } from "@/components/NavBar";
+import { Footer } from "@/components/Footer";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGear, faFloppyDisk, faCheck } from "@fortawesome/free-solid-svg-icons";
 
 const PROVIDERS = [
   { key: "groq", label: "Groq", defaultModel: "llama-3.3-70b-versatile" },
@@ -45,28 +48,31 @@ export default function SettingsPage() {
     <div className="min-h-screen flex flex-col">
       <NavBar />
       <main className="flex-1 p-4 max-w-2xl mx-auto w-full mt-4 flex flex-col gap-4">
-        <div className="bg-neu-bg shadow-neu-raised rounded-2xl p-6 flex flex-col gap-5">
-          <h1 className="text-lg font-bold text-neu-text">⚙️ Settings</h1>
+        <div className="th-bg th-raised rounded-2xl p-6 flex flex-col gap-5">
+          <h1 className="text-lg font-bold th-text flex items-center gap-2">
+            <FontAwesomeIcon icon={faGear} className="w-4 h-4 th-accent" />
+            <span>Settings</span>
+          </h1>
 
           <div>
-            <label className="block text-xs font-bold uppercase tracking-widest text-neu-text-muted mb-2">
+            <label className="block text-xs font-bold uppercase tracking-widest th-muted mb-2">
               Default Provider
             </label>
             <select
               value={defaultProvider}
               onChange={(e) => setDefaultProvider(e.target.value)}
-              className="w-full bg-neu-bg shadow-neu-inset rounded-xl px-4 py-3 text-sm
-                text-neu-text border-none outline-none cursor-pointer"
+              className="w-full th-bg th-inset rounded-xl px-4 py-3 text-sm
+                th-text border-none outline-none cursor-pointer focus:ring-2 focus:ring-[var(--accent)]"
             >
               {PROVIDERS.map((p) => (
-                <option key={p.key} value={p.key}>{p.label}</option>
+                <option key={p.key} value={p.key} className="th-bg th-text">{p.label}</option>
               ))}
             </select>
           </div>
 
           {PROVIDERS.map((p) => (
             <div key={p.key}>
-              <label className="block text-xs font-bold uppercase tracking-widest text-neu-text-muted mb-2">
+              <label className="block text-xs font-bold uppercase tracking-widest th-muted mb-2">
                 {p.label} API Key
               </label>
               <input
@@ -74,9 +80,9 @@ export default function SettingsPage() {
                 placeholder={keys[p.key] === "***set***" ? "API Key is set (enter to overwrite)" : `Enter ${p.label} API key...`}
                 value={keys[p.key] ?? ""}
                 onChange={(e) => setKeys((k) => ({ ...k, [p.key]: e.target.value }))}
-                className="w-full bg-neu-bg shadow-neu-inset rounded-xl px-4 py-3 text-sm
-                  text-neu-text placeholder:text-neu-text-muted border-none outline-none
-                  focus:ring-2 focus:ring-neu-accent"
+                className="w-full th-bg th-inset rounded-xl px-4 py-3 text-sm
+                  th-text placeholder:th-muted border-none outline-none
+                  focus:ring-2 focus:ring-[var(--accent)]"
               />
             </div>
           ))}
@@ -84,13 +90,16 @@ export default function SettingsPage() {
           <button
             onClick={handleSave}
             className="w-full py-3 rounded-xl font-semibold text-sm
-              bg-neu-bg shadow-neu-btn text-neu-accent
-              hover:bg-neu-accent hover:text-white transition-all"
+              th-bg th-btn th-accent hover:bg-[var(--accent)] hover:text-white transition-all
+              flex items-center justify-center gap-1.5 cursor-pointer"
           >
-            {saved ? "✓ Saved!" : "💾 Save Settings"}
+            <FontAwesomeIcon icon={saved ? faCheck : faFloppyDisk} className="w-4 h-4" />
+            <span>{saved ? "Saved!" : "Save Settings"}</span>
           </button>
         </div>
       </main>
+      <Footer />
     </div>
   );
 }
+

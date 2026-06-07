@@ -1,14 +1,21 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { NavBar } from "@/components/NavBar";
+import { Footer } from "@/components/Footer";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { 
+  faBook, 
+  faFolderOpen, 
+  faFileLines, 
+  faTrash, 
+  faSpinner, 
+  faPlus, 
+  faCircleNotch 
+} from "@fortawesome/free-solid-svg-icons";
+import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import type { KnowledgeEntry } from "@/types";
 
 type Tab = "github" | "upload";
-
-const SOURCE_ICONS: Record<string, string> = {
-  upload: "📄",
-  github: "🐙",
-};
 
 export default function KnowledgePage() {
   const [entries, setEntries] = useState<KnowledgeEntry[]>([]);
@@ -76,6 +83,7 @@ export default function KnowledgePage() {
     }
   }
 
+  // ── Drag & drop ───────────────────────────────────────────────
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (file) uploadFile(file);
@@ -105,10 +113,13 @@ export default function KnowledgePage() {
       <main className="flex-1 p-4 max-w-3xl mx-auto w-full mt-4 flex flex-col gap-4">
 
         {/* ── Add Panel ─────────────────────────────────────────── */}
-        <div className="bg-neu-bg shadow-neu-raised rounded-2xl p-6 flex flex-col gap-4">
+        <div className="th-bg th-raised rounded-2xl p-6 flex flex-col gap-4">
           <div>
-            <h1 className="text-lg font-bold text-neu-text">📚 Knowledge &amp; Skills</h1>
-            <p className="text-xs text-neu-text-muted mt-1">
+            <h1 className="text-lg font-bold th-text flex items-center gap-2">
+              <FontAwesomeIcon icon={faBook} className="w-4 h-4 th-accent" />
+              <span>Knowledge &amp; Skills</span>
+            </h1>
+            <p className="text-xs th-muted mt-1">
               Feed the engine with skills, docs, or repos. It uses them as context when engineering your prompts.
             </p>
           </div>
@@ -117,33 +128,35 @@ export default function KnowledgePage() {
           <div className="flex gap-2">
             <button
               onClick={() => setTab("github")}
-              className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
+              className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
                 tab === "github"
-                  ? "shadow-neu-inset text-neu-accent"
-                  : "shadow-neu-raised text-neu-text-muted hover:text-neu-accent"
+                  ? "th-inset th-accent"
+                  : "th-raised th-muted hover:th-accent"
               }`}
             >
-              🐙 GitHub Repo
+              <FontAwesomeIcon icon={faGithub} className="w-3.5 h-3.5" />
+              <span>GitHub Repo</span>
             </button>
             <button
               onClick={() => setTab("upload")}
-              className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
+              className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
                 tab === "upload"
-                  ? "shadow-neu-inset text-neu-accent"
-                  : "shadow-neu-raised text-neu-text-muted hover:text-neu-accent"
+                  ? "th-inset th-accent"
+                  : "th-raised th-muted hover:th-accent"
               }`}
             >
-              📄 Upload Skill / Doc
+              <FontAwesomeIcon icon={faFolderOpen} className="w-3.5 h-3.5" />
+              <span>Upload Skill / Doc</span>
             </button>
           </div>
 
           {/* GitHub tab */}
           {tab === "github" && (
             <div className="flex flex-col gap-3">
-              <p className="text-xs text-neu-text-muted">
-                Paste any public GitHub repo URL. The engine will fetch all <code className="text-neu-accent">.md</code>,{" "}
-                <code className="text-neu-accent">.txt</code>, <code className="text-neu-accent">.yaml</code>, and{" "}
-                <code className="text-neu-accent">.json</code> files from it (up to 50 files).
+              <p className="text-xs th-muted">
+                Paste any public GitHub repo URL. The engine will fetch all <code className="th-accent">.md</code>,{" "}
+                <code className="th-accent">.txt</code>, <code className="th-accent">.yaml</code>, and{" "}
+                <code className="th-accent">.json</code> files from it (up to 50 files).
               </p>
               <div className="flex gap-2">
                 <input
@@ -151,34 +164,41 @@ export default function KnowledgePage() {
                   onChange={(e) => setGithubUrl(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleAddGitHub()}
                   placeholder="https://github.com/owner/repo"
-                  className="flex-1 bg-neu-bg shadow-neu-inset rounded-xl px-4 py-2.5
-                    text-sm text-neu-text placeholder:text-neu-text-muted
-                    border-none outline-none focus:ring-2 focus:ring-neu-accent"
+                  className="flex-1 th-bg th-inset rounded-xl px-4 py-2.5
+                    text-sm th-text placeholder:th-muted
+                    border-none outline-none focus:ring-2 focus:ring-[var(--accent)]"
                 />
                 <button
                   onClick={handleAddGitHub}
                   disabled={githubLoading || !githubUrl.trim()}
                   className="px-5 py-2.5 rounded-xl text-sm font-semibold
-                    bg-neu-bg shadow-neu-btn text-neu-accent
-                    hover:bg-neu-accent hover:text-white transition-all
-                    disabled:opacity-40"
+                    th-bg th-btn th-accent
+                    hover:bg-[var(--accent)] hover:text-white transition-all
+                    disabled:opacity-40 flex items-center justify-center gap-1.5 cursor-pointer"
                 >
-                  {githubLoading ? "⏳" : "+ Add"}
+                  {githubLoading ? (
+                    <FontAwesomeIcon icon={faSpinner} className="w-3.5 h-3.5 animate-spin" />
+                  ) : (
+                    <>
+                      <FontAwesomeIcon icon={faPlus} className="w-3 h-3" />
+                      <span>Add</span>
+                    </>
+                  )}
                 </button>
               </div>
-              {githubError && <p className="text-xs text-red-400">{githubError}</p>}
+              {githubError && <p className="text-xs text-red-500 mt-1">{githubError}</p>}
             </div>
           )}
 
           {/* Upload tab */}
           {tab === "upload" && (
             <div className="flex flex-col gap-3">
-              <p className="text-xs text-neu-text-muted">
+              <p className="text-xs th-muted">
                 Upload a skill file, prompt template, or doc (any plain-text format:{" "}
-                <code className="text-neu-accent">.md</code>,{" "}
-                <code className="text-neu-accent">.txt</code>,{" "}
-                <code className="text-neu-accent">.yaml</code>,{" "}
-                <code className="text-neu-accent">.json</code>, etc).
+                <code className="th-accent">.md</code>,{" "}
+                <code className="th-accent">.txt</code>,{" "}
+                <code className="th-accent">.yaml</code>,{" "}
+                <code className="th-accent">.json</code>, etc).
                 The content is indexed and injected as context during prompt engineering.
               </p>
 
@@ -189,22 +209,25 @@ export default function KnowledgePage() {
                 onDrop={handleDrop}
                 onClick={() => fileInputRef.current?.click()}
                 className={`flex flex-col items-center justify-center gap-3 rounded-2xl p-8 cursor-pointer
-                  transition-all border-2 border-dashed
+                  transition-all border-2 border-dashed group
                   ${dragOver
-                    ? "border-neu-accent bg-neu-surface"
-                    : "border-neu-text-muted/30 hover:border-neu-accent/60"
+                    ? "border-[var(--accent)] th-surface"
+                    : "border-slate-500/30 hover:border-[var(--accent)]/60"
                   }`}
               >
                 {uploadLoading ? (
-                  <p className="text-sm text-neu-text-muted animate-pulse">⏳ Uploading…</p>
+                  <div className="flex flex-col items-center gap-2 text-sm th-muted animate-pulse">
+                    <FontAwesomeIcon icon={faCircleNotch} className="w-8 h-8 animate-spin th-accent" />
+                    <span>Uploading…</span>
+                  </div>
                 ) : (
                   <>
-                    <span className="text-4xl">📂</span>
-                    <p className="text-sm text-neu-text-muted text-center">
+                    <FontAwesomeIcon icon={faFolderOpen} className="w-10 h-10 th-muted/60 group-hover:th-accent transition-colors" />
+                    <p className="text-sm th-muted text-center mt-2">
                       Drag &amp; drop a file here, or{" "}
-                      <span className="text-neu-accent font-semibold">click to browse</span>
+                      <span className="th-accent font-semibold">click to browse</span>
                     </p>
-                    <p className="text-xs text-neu-text-muted/60">
+                    <p className="text-xs th-muted opacity-60">
                       .md · .txt · .yaml · .json · .py · any plain-text file
                     </p>
                   </>
@@ -219,7 +242,7 @@ export default function KnowledgePage() {
                 onChange={handleFileChange}
               />
 
-              {uploadError && <p className="text-xs text-red-400">{uploadError}</p>}
+              {uploadError && <p className="text-xs text-red-500 mt-1">{uploadError}</p>}
             </div>
           )}
         </div>
@@ -227,43 +250,47 @@ export default function KnowledgePage() {
         {/* ── Indexed Sources List ───────────────────────────────── */}
         <div className="flex flex-col gap-3">
           {entries.length === 0 && (
-            <p className="text-center text-neu-text-muted text-sm py-8">
+            <p className="text-center th-muted text-sm py-8">
               No knowledge or skills added yet. Use the panel above to get started.
             </p>
           )}
           {entries.length > 0 && (
-            <p className="text-xs font-bold uppercase tracking-widest text-neu-text-muted px-1">
+            <p className="text-xs font-bold uppercase tracking-widest th-muted px-1">
               {entries.length} indexed source{entries.length !== 1 ? "s" : ""}
             </p>
           )}
           {entries.map((entry) => (
             <div
               key={entry.id}
-              className="bg-neu-bg shadow-neu-raised rounded-2xl p-4 flex items-center justify-between gap-4"
+              className="th-bg th-raised rounded-2xl p-4 flex items-center justify-between gap-4"
             >
               <div className="flex items-start gap-3 min-w-0">
-                <span className="text-xl shrink-0 mt-0.5">
-                  {SOURCE_ICONS[entry.source === "upload" ? "upload" : "github"] ?? "📚"}
-                </span>
+                <FontAwesomeIcon 
+                  icon={entry.source === "upload" ? faFileLines : faGithub} 
+                  className="w-5 h-5 th-accent shrink-0 mt-1" 
+                />
                 <div className="min-w-0">
-                  <p className="text-sm font-semibold text-neu-text truncate">{entry.name}</p>
-                  <p className="text-xs text-neu-text-muted mt-0.5 truncate">{entry.description}</p>
-                  <p className="text-xs text-neu-text-muted/60 mt-0.5">
+                  <p className="text-sm font-semibold th-text truncate">{entry.name}</p>
+                  <p className="text-xs th-muted mt-0.5 truncate">{entry.description}</p>
+                  <p className="text-xs th-muted opacity-60 mt-0.5">
                     Added {new Date(entry.addedAt).toLocaleDateString()}
                   </p>
                 </div>
               </div>
               <button
                 onClick={() => handleDelete(entry.id)}
-                className="text-xs px-3 py-1.5 rounded-lg text-red-400
-                  hover:bg-red-950 transition-all shrink-0"
+                className="text-xs px-3 py-2 rounded-lg text-red-500 hover:text-red-700
+                  dark:text-red-400 dark:hover:text-red-300 hover:bg-red-500/10 transition-all shrink-0 flex items-center gap-1 cursor-pointer font-semibold"
               >
-                🗑 Remove
+                <FontAwesomeIcon icon={faTrash} className="w-3 h-3" />
+                <span>Remove</span>
               </button>
             </div>
           ))}
         </div>
       </main>
+      <Footer />
     </div>
   );
 }
+

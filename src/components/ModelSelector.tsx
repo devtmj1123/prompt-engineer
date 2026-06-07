@@ -14,20 +14,21 @@ interface Props {
 export function ModelSelector({ value, onChange }: Props) {
   return (
     <div>
-      <label className="block text-xs font-bold uppercase tracking-widest text-neu-text-muted mb-2">
+      <label className="block text-xs font-bold uppercase tracking-widest th-muted mb-2">
         Target AI Model
       </label>
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full bg-neu-bg text-neu-text rounded-xl px-4 py-3 text-sm
-          shadow-neu-inset border-none outline-none cursor-pointer
-          focus:ring-2 focus:ring-neu-accent transition-all"
+        className="w-full th-bg th-text rounded-xl px-4 py-3 text-sm
+          th-inset border-none outline-none cursor-pointer
+          focus:ring-2 focus:ring-[var(--accent)] transition-all"
       >
         {MODELS.map((m) => (
-          <option key={m.value} value={m.value}>{m.label}</option>
+          <option key={m.value} value={m.value} className="th-bg th-text">{m.label}</option>
         ))}
       </select>
     </div>
   );
 }
+
