@@ -5,6 +5,7 @@ import { GeminiClient } from "./gemini";
 import { ClaudeClient } from "./claude";
 import { OpenAIClient } from "./openai";
 import { DeepSeekClient } from "./deepseek";
+import { XiaomiClient } from "./xiaomi";
 
 export function createClient(config: AppConfig, overrideProvider?: LLMProvider): LLMClient {
   const provider = overrideProvider ?? config.defaultProvider;
@@ -19,6 +20,7 @@ export function createClient(config: AppConfig, overrideProvider?: LLMProvider):
     case "claude":   return new ClaudeClient(providerConfig.apiKey, providerConfig.model);
     case "openai":   return new OpenAIClient(providerConfig.apiKey, providerConfig.model);
     case "deepseek": return new DeepSeekClient(providerConfig.apiKey, providerConfig.model);
+    case "xiaomi":   return new XiaomiClient(providerConfig.apiKey, providerConfig.model);
     default:         throw new Error(`Unknown provider: ${provider}`);
   }
 }

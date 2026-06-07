@@ -13,6 +13,7 @@ const PROVIDERS = [
   { key: "claude", label: "Anthropic Claude", defaultModel: "claude-3-5-sonnet-latest" },
   { key: "openai", label: "OpenAI", defaultModel: "gpt-4o" },
   { key: "deepseek", label: "DeepSeek", defaultModel: "deepseek-chat" },
+  { key: "xiaomi", label: "Xiaomi (Mimo)", defaultModel: "mimo-chat" },
 ];
 
 export default function SettingsPage() {

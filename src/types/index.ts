@@ -1,6 +1,6 @@
 export type PromptCategory = "coding" | "image" | "writing" | "video";
 export type ExecutionStrategy = "sequential" | "fan_out";
-export type LLMProvider = "groq" | "cerebras" | "gemini" | "claude" | "openai" | "deepseek";
+export type LLMProvider = "groq" | "cerebras" | "gemini" | "claude" | "openai" | "deepseek" | "xiaomi";
 
 export interface TokenUsage {
   promptTokens: number;

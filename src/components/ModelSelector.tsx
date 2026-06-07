@@ -8,6 +8,7 @@ const MODELS = [
   { label: "Claude 3.5 Sonnet", value: "claude-3-5-sonnet-latest" },
   { label: "OpenAI — GPT-4o", value: "gpt-4o" },
   { label: "DeepSeek Chat", value: "deepseek-chat" },
+  { label: "Xiaomi — Mimo", value: "mimo-chat" },
 ];
 
 interface Props {
