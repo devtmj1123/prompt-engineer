@@ -3,7 +3,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTheme } from "@/components/ThemeProvider";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBrain, faBolt, faBook, faGear, faSun, faMoon } from "@fortawesome/free-solid-svg-icons";
+import { faBrain, faBolt, faBook, faGear, faSun, faMoon, faClockRotateLeft } from "@fortawesome/free-solid-svg-icons";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
 
 export function NavBar() {
@@ -12,6 +12,7 @@ export function NavBar() {
 
   const LINKS = [
     { href: "/", label: "Workspace", icon: faBolt },
+    { href: "/history", label: "History", icon: faClockRotateLeft },
     { href: "/knowledge", label: "Knowledge", icon: faBook },
     { href: "/settings", label: "Settings", icon: faGear },
   ];

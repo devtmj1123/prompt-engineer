@@ -19,6 +19,14 @@ export interface RefineRequest {
   customInstructions?: string;
 }
 
+export interface EditRequest {
+  currentPrompt: string;
+  instruction: string;
+  category: PromptCategory;
+  targetModel: string;
+}
+
+
 export interface ProviderConfig {
   apiKey: string;
   model: string;

@@ -1,4 +1,4 @@
-import type { RefineRequest, PromptEngineerResult, PromptCategory, LLMClient } from "@/types";
+import type { RefineRequest, EditRequest, PromptEngineerResult, PromptCategory, LLMClient } from "@/types";
 import { getTemplate } from "./templates";
 import { getRelevantContext } from "./knowledge";
 import { readConfig } from "./config";
@@ -62,3 +62,50 @@ export async function engineerPrompt(request: RefineRequest): Promise<PromptEngi
 
   return parsed;
 }
+
+export async function editPrompt(request: EditRequest): Promise<PromptEngineerResult> {
+  const config = readConfig();
+  const client = createClient(config);
+
+  const systemPrompt = `You are an expert prompt engineer.
+Your task is to refine or edit a specific part of an existing engineered prompt based on the user's instructions.
+Focus on making the edit as requested while preserving the overall structure, tone, and system instruction guidelines of the original prompt.
+
+Original Category: ${request.category}
+Target Model: ${request.targetModel}
+
+Respond ONLY with a valid JSON object of the following format. Ensure all quotes are escaped and output is parseable JSON. Do not include markdown code block syntax (like \`\`\`json) in the raw text.
+
+JSON format:
+{
+  "optimizedPrompt": "the fully updated prompt incorporating the edits",
+  "explanation": "a concise explanation of what edits were made and why",
+  "requiredTools": ["web_search", "read_file", etc. if updated],
+  "executionStrategy": "sequential" or "fan_out",
+  "suggestedSubtasks": ["step 1", "step 2", etc. if updated]
+}`;
+
+  const userMessage = `Existing Engineered Prompt:\n"""\n${request.currentPrompt}\n"""\n\nUser Edit Instruction:\n"${request.instruction}"`;
+
+  const rawResult = await client.complete(systemPrompt, userMessage);
+
+  let parsed: PromptEngineerResult;
+  try {
+    const jsonMatch = rawResult.match(/\{[\s\S]*\}/);
+    const jsonStr = jsonMatch ? jsonMatch[0] : rawResult;
+    parsed = { ...JSON.parse(jsonStr), targetModel: request.targetModel, category: request.category };
+  } catch {
+    parsed = {
+      optimizedPrompt: rawResult,
+      explanation: "Prompt has been updated as requested.",
+      requiredTools: [],
+      executionStrategy: "sequential",
+      suggestedSubtasks: [],
+      targetModel: request.targetModel,
+      category: request.category,
+    };
+  }
+
+  return parsed;
+}
+

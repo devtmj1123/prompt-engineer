@@ -17,18 +17,19 @@ export function ModelSelector({ value, onChange }: Props) {
       <label className="block text-xs font-bold uppercase tracking-widest th-muted mb-2">
         Target AI Model
       </label>
-      <select
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="w-full th-bg th-text rounded-xl px-4 py-3 text-sm
-          th-inset border-none outline-none cursor-pointer
-          focus:ring-2 focus:ring-[var(--accent)] transition-all"
-      >
-        {MODELS.map((m) => (
-          <option key={m.value} value={m.value} className="th-bg th-text">{m.label}</option>
-        ))}
-      </select>
+      <div className="neu-select-wrapper">
+        <select
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className="neu-select"
+        >
+          {MODELS.map((m) => (
+            <option key={m.value} value={m.value}>{m.label}</option>
+          ))}
+        </select>
+      </div>
     </div>
   );
 }
+
 

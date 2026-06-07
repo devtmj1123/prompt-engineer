@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { NavBar } from "@/components/NavBar";
 import { ModelSelector } from "@/components/ModelSelector";
 import { CategorySelector } from "@/components/CategorySelector";
@@ -17,7 +17,44 @@ export default function WorkspacePage() {
   const [customInstructions, setCustomInstructions] = useState("");
   const [result, setResult] = useState<PromptEngineerResult | null>(null);
   const [loading, setLoading] = useState(false);
+  const [refining, setRefining] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Load from history if flagged
+  useEffect(() => {
+    try {
+      const loadData = localStorage.getItem("prompt_engineer_load_history");
+      if (loadData) {
+        const item = JSON.parse(loadData);
+        setRawPrompt(item.rawPrompt ?? "");
+        setTargetModel(item.targetModel ?? "llama-3.3-70b-versatile");
+        setCategory(item.category ?? "auto");
+        setCustomInstructions(item.customInstructions ?? "");
+        setResult(item.result ?? null);
+        localStorage.removeItem("prompt_engineer_load_history");
+      }
+    } catch (err) {
+      // Ignore load errors
+    }
+  }, []);
+
+  async function handleSaveToHistory(res: PromptEngineerResult, customInst: string) {
+    try {
+      const historyItem = {
+        id: Math.random().toString(36).substring(2, 9),
+        timestamp: Date.now(),
+        rawPrompt,
+        targetModel: res.targetModel,
+        category: res.category,
+        customInstructions: customInst,
+        result: res
+      };
+      const existing = JSON.parse(localStorage.getItem("prompt_history") || "[]");
+      localStorage.setItem("prompt_history", JSON.stringify([historyItem, ...existing]));
+    } catch (err) {
+      // Ignore local storage write errors
+    }
+  }
 
   async function handleEngineer() {
     if (!rawPrompt.trim()) return;
@@ -38,10 +75,41 @@ export default function WorkspacePage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Failed to engineer prompt");
       setResult(data);
+      await handleSaveToHistory(data, customInstructions);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function handleRefine(instruction: string) {
+    if (!result || !instruction.trim()) return;
+    setRefining(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/edit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          currentPrompt: result.optimizedPrompt,
+          instruction,
+          category: result.category,
+          targetModel: result.targetModel,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Failed to edit prompt");
+      setResult(data);
+      const updatedInstructions = customInstructions 
+        ? `${customInstructions}\n[Edit]: ${instruction}` 
+        : `[Edit]: ${instruction}`;
+      setCustomInstructions(updatedInstructions);
+      await handleSaveToHistory(data, updatedInstructions);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Refinement failed");
+    } finally {
+      setRefining(false);
     }
   }
 
@@ -95,7 +163,7 @@ export default function WorkspacePage() {
 
           <button
             onClick={handleEngineer}
-            disabled={loading || !rawPrompt.trim()}
+            disabled={loading || refining || !rawPrompt.trim()}
             className="w-full py-3 rounded-xl font-semibold text-sm transition-all
               th-bg th-btn th-accent hover:bg-[var(--accent)] hover:text-white hover:shadow-none
               disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
@@ -116,7 +184,12 @@ export default function WorkspacePage() {
 
         {/* Right Pane — Output */}
         <div className="th-bg th-raised rounded-2xl p-6 flex flex-col gap-5">
-          <PromptOutput result={result} loading={loading} />
+          <PromptOutput 
+            result={result} 
+            loading={loading} 
+            refining={refining} 
+            onRefine={handleRefine} 
+          />
           <ExecutionPlan result={result} />
         </div>
       </main>
@@ -124,4 +197,5 @@ export default function WorkspacePage() {
     </div>
   );
 }
+
 

@@ -58,16 +58,17 @@ export default function SettingsPage() {
             <label className="block text-xs font-bold uppercase tracking-widest th-muted mb-2">
               Default Provider
             </label>
-            <select
-              value={defaultProvider}
-              onChange={(e) => setDefaultProvider(e.target.value)}
-              className="w-full th-bg th-inset rounded-xl px-4 py-3 text-sm
-                th-text border-none outline-none cursor-pointer focus:ring-2 focus:ring-[var(--accent)]"
-            >
-              {PROVIDERS.map((p) => (
-                <option key={p.key} value={p.key} className="th-bg th-text">{p.label}</option>
-              ))}
-            </select>
+            <div className="neu-select-wrapper">
+              <select
+                value={defaultProvider}
+                onChange={(e) => setDefaultProvider(e.target.value)}
+                className="neu-select"
+              >
+                {PROVIDERS.map((p) => (
+                  <option key={p.key} value={p.key}>{p.label}</option>
+                ))}
+              </select>
+            </div>
           </div>
 
           {PROVIDERS.map((p) => (

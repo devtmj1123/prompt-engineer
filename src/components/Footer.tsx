@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import { faCode } from "@fortawesome/free-solid-svg-icons";
@@ -21,6 +22,12 @@ export function Footer() {
         >
           MIT License
         </a>
+        <Link 
+          href="/privacy"
+          className="th-muted hover:th-accent transition-colors duration-150"
+        >
+          Privacy Policy
+        </Link>
         <a
           href="https://github.com/devtmj1123/prompt-engineer"
           target="_blank"
