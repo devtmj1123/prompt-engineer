@@ -23,7 +23,7 @@ async function detectCategory(client: LLMClient, rawPrompt: string): Promise<{ c
 
 export async function engineerPrompt(request: RefineRequest): Promise<PromptEngineerResult> {
   const config = readConfig();
-  const client = createClient(config);
+  const client = createClient(config, request.provider);
 
   // Stage 1: Intent Analysis — detect category if not provided
   const category = request.category ?? (await detectCategory(client, request.rawPrompt)).category;
@@ -68,7 +68,7 @@ export async function engineerPrompt(request: RefineRequest): Promise<PromptEngi
 
 export async function editPrompt(request: EditRequest): Promise<PromptEngineerResult> {
   const config = readConfig();
-  const client = createClient(config);
+  const client = createClient(config, request.provider);
 
   const systemPrompt = `You are an expert prompt engineer.
 Your task is to refine or edit a specific part of an existing engineered prompt based on the user's instructions.

@@ -12,7 +12,8 @@ import type { PromptEngineerResult, PromptCategory } from "@/types";
 
 export default function WorkspacePage() {
   const [rawPrompt, setRawPrompt] = useState("");
-  const [targetModel, setTargetModel] = useState("llama-3.3-70b-versatile");
+  const [provider, setProvider] = useState("groq");
+  const [targetModel, setTargetModel] = useState("");
   const [category, setCategory] = useState<PromptCategory | "auto">("auto");
   const [customInstructions, setCustomInstructions] = useState("");
   const [result, setResult] = useState<PromptEngineerResult | null>(null);
@@ -27,7 +28,8 @@ export default function WorkspacePage() {
       if (loadData) {
         const item = JSON.parse(loadData);
         setRawPrompt(item.rawPrompt ?? "");
-        setTargetModel(item.targetModel ?? "llama-3.3-70b-versatile");
+        setProvider(item.provider ?? "groq");
+        setTargetModel(item.targetModel ?? "");
         setCategory(item.category ?? "auto");
         setCustomInstructions(item.customInstructions ?? "");
         setResult(item.result ?? null);
@@ -44,6 +46,7 @@ export default function WorkspacePage() {
         id: Math.random().toString(36).substring(2, 9),
         timestamp: Date.now(),
         rawPrompt,
+        provider,
         targetModel: res.targetModel,
         category: res.category,
         customInstructions: customInst,
@@ -67,7 +70,8 @@ export default function WorkspacePage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           rawPrompt,
-          targetModel,
+          provider,
+          targetModel: targetModel || undefined,
           category: category === "auto" ? undefined : category,
           customInstructions: customInstructions || undefined,
         }),
@@ -96,6 +100,7 @@ export default function WorkspacePage() {
           instruction,
           category: result.category,
           targetModel: result.targetModel,
+          provider,
         }),
       });
       const data = await res.json();
@@ -126,7 +131,12 @@ export default function WorkspacePage() {
             </p>
           </div>
 
-          <ModelSelector value={targetModel} onChange={setTargetModel} />
+          <ModelSelector
+            provider={provider}
+            model={targetModel}
+            onProviderChange={setProvider}
+            onModelChange={setTargetModel}
+          />
           <CategorySelector value={category} onChange={setCategory} />
 
           <div>
@@ -184,11 +194,12 @@ export default function WorkspacePage() {
 
         {/* Right Pane — Output */}
         <div className="th-bg th-raised rounded-2xl p-6 flex flex-col gap-5 anim-fade-right anim-delay-1">
-          <PromptOutput 
-            result={result} 
-            loading={loading} 
-            refining={refining} 
-            onRefine={handleRefine} 
+          <PromptOutput
+            result={result}
+            loading={loading}
+            refining={refining}
+            autoDetected={category === "auto"}
+            onRefine={handleRefine}
           />
           <ExecutionPlan result={result} />
         </div>

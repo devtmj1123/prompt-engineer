@@ -3,7 +3,7 @@ import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { CallToolRequestSchema, ListToolsRequestSchema } from "@modelcontextprotocol/sdk/types.js";
 import { engineerPrompt } from "../src/core/engine";
-import type { PromptCategory } from "../src/types";
+import type { PromptCategory, LLMProvider } from "../src/types";
 
 const server = new Server(
   { name: "prompt-engineer", version: "1.0.0" },
@@ -22,7 +22,8 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
         type: "object",
         properties: {
           rawPrompt: { type: "string", description: "The raw natural language intent to engineer." },
-          targetModel: { type: "string", description: "Target AI model (e.g. 'claude-3-5-sonnet-latest', 'gemini-2.0-flash', 'midjourney')." },
+          provider: { type: "string", enum: ["groq", "cerebras", "gemini", "claude", "openai", "deepseek", "xiaomi"], description: "AI provider to use. Uses default provider if not specified." },
+          targetModel: { type: "string", description: "Target AI model name (e.g. 'gpt-4o', 'claude-sonnet-4-20250514', 'gemini-2.0-flash'). Uses provider's default if not specified." },
           category: { type: "string", enum: ["coding", "image", "writing", "video"], description: "Prompt category. Auto-detected if not provided." },
           customInstructions: { type: "string", description: "Additional constraints or instructions to factor in." },
         },
@@ -38,6 +39,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   }
   const args = request.params.arguments as {
     rawPrompt: string;
+    provider?: LLMProvider;
     targetModel?: string;
     category?: PromptCategory;
     customInstructions?: string;

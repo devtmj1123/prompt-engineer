@@ -27,6 +27,7 @@ export interface PromptEngineerResult {
 export interface RefineRequest {
   rawPrompt: string;
   targetModel?: string;
+  provider?: LLMProvider;
   category?: PromptCategory;
   customInstructions?: string;
 }
@@ -36,6 +37,7 @@ export interface EditRequest {
   instruction: string;
   category: PromptCategory;
   targetModel: string;
+  provider?: LLMProvider;
 }
 
 

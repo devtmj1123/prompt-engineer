@@ -8,10 +8,11 @@ interface Props {
   result: PromptEngineerResult | null;
   loading: boolean;
   refining?: boolean;
+  autoDetected?: boolean;
   onRefine?: (instruction: string) => Promise<void>;
 }
 
-export function PromptOutput({ result, loading, refining = false, onRefine }: Props) {
+export function PromptOutput({ result, loading, refining = false, autoDetected = false, onRefine }: Props) {
   const [copied, setCopied] = useState(false);
   const [showRefineInput, setShowRefineInput] = useState(false);
   const [refineInstruction, setRefineInstruction] = useState("");
@@ -64,6 +65,11 @@ export function PromptOutput({ result, loading, refining = false, onRefine }: Pr
             <span className="text-[10px] px-2 py-0.5 rounded-full th-inset th-text flex items-center gap-1 opacity-70">
               <FontAwesomeIcon icon={faBatteryFull} className="w-2.5 h-2.5" />
               {result.usage.totalTokens} tokens
+            </span>
+          )}
+          {autoDetected && (
+            <span className="text-[10px] px-2.5 py-0.5 rounded-full th-accent bg-[var(--accent)]/10 font-semibold capitalize">
+              Detected: {result.category}
             </span>
           )}
         </div>

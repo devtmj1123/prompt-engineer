@@ -4,7 +4,7 @@ import readline from "readline";
 import { engineerPrompt } from "../src/core/engine";
 import { addFromGitHub, readIndex } from "../src/core/knowledge";
 import { readConfig, writeConfig } from "../src/core/config";
-import type { PromptCategory } from "../src/types";
+import type { PromptCategory, LLMProvider } from "../src/types";
 
 const program = new Command();
 program.name("prompt-eng").description("AI Prompt Engineer CLI").version("1.0.0");
@@ -12,13 +12,15 @@ program.name("prompt-eng").description("AI Prompt Engineer CLI").version("1.0.0"
 // Main refine command
 program
   .argument("[prompt]", "Raw prompt to engineer")
-  .option("-m, --model <model>", "Target model")
+  .option("-p, --provider <provider>", "AI provider: groq|cerebras|gemini|claude|openai|deepseek|xiaomi")
+  .option("-m, --model <model>", "Target model name (any model supported by the provider)")
   .option("-c, --category <category>", "Category: coding|image|writing|video")
   .action(async (prompt, options) => {
     const raw = prompt ?? await askQuestion("Enter your raw prompt:\n> ");
     console.log("\n⏳ Engineering your prompt...\n");
     const result = await engineerPrompt({
       rawPrompt: raw,
+      provider: options.provider as LLMProvider | undefined,
       targetModel: options.model,
       category: options.category as PromptCategory | undefined,
     });
