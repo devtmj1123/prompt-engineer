@@ -6,7 +6,7 @@ import type { AppConfig, LLMProvider } from "@/types";
 const DEFAULT_CONFIG: AppConfig = {
   defaultProvider: "groq",
   providers: {
-    groq: { apiKey: "", model: "llama-3.3-70b-specdec" },
+    groq: { apiKey: "", model: "llama-3.3-70b-versatile" },
     cerebras: { apiKey: "", model: "llama3.1-70b" },
     gemini: { apiKey: "", model: "gemini-2.0-flash" },
     claude: { apiKey: "", model: "claude-3-5-sonnet-latest" },

@@ -9,7 +9,7 @@ import type { PromptEngineerResult, PromptCategory } from "@/types";
 
 export default function WorkspacePage() {
   const [rawPrompt, setRawPrompt] = useState("");
-  const [targetModel, setTargetModel] = useState("llama-3.3-70b-specdec");
+  const [targetModel, setTargetModel] = useState("llama-3.3-70b-versatile");
   const [category, setCategory] = useState<PromptCategory | "auto">("auto");
   const [customInstructions, setCustomInstructions] = useState("");
   const [result, setResult] = useState<PromptEngineerResult | null>(null);

@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { NavBar } from "@/components/NavBar";
 
 const PROVIDERS = [
-  { key: "groq", label: "Groq", defaultModel: "llama-3.3-70b-specdec" },
+  { key: "groq", label: "Groq", defaultModel: "llama-3.3-70b-versatile" },
   { key: "cerebras", label: "Cerebras", defaultModel: "llama3.1-70b" },
   { key: "gemini", label: "Google Gemini", defaultModel: "gemini-2.0-flash" },
   { key: "claude", label: "Anthropic Claude", defaultModel: "claude-3-5-sonnet-latest" },
