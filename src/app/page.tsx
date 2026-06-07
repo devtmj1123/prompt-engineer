@@ -1,63 +1,111 @@
-import Image from "next/image";
+"use client";
+import { useState } from "react";
+import { NavBar } from "@/components/NavBar";
+import { ModelSelector } from "@/components/ModelSelector";
+import { CategorySelector } from "@/components/CategorySelector";
+import { PromptOutput } from "@/components/PromptOutput";
+import { ExecutionPlan } from "@/components/ExecutionPlan";
+import type { PromptEngineerResult, PromptCategory } from "@/types";
 
-export default function Home() {
+export default function WorkspacePage() {
+  const [rawPrompt, setRawPrompt] = useState("");
+  const [targetModel, setTargetModel] = useState("llama-3.3-70b-specdec");
+  const [category, setCategory] = useState<PromptCategory | "auto">("auto");
+  const [customInstructions, setCustomInstructions] = useState("");
+  const [result, setResult] = useState<PromptEngineerResult | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function handleEngineer() {
+    if (!rawPrompt.trim()) return;
+    setLoading(true);
+    setError(null);
+    setResult(null);
+    try {
+      const res = await fetch("/api/refine", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          rawPrompt,
+          targetModel,
+          category: category === "auto" ? undefined : category,
+          customInstructions: customInstructions || undefined,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Failed to engineer prompt");
+      setResult(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+    <div className="min-h-screen flex flex-col">
+      <NavBar />
+      <main className="flex-1 p-4 grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
+        {/* Left Pane — Input */}
+        <div className="bg-neu-bg shadow-neu-raised rounded-2xl p-6 flex flex-col gap-5">
+          <div>
+            <h1 className="text-lg font-bold text-neu-text mb-1">Prompt Engineer</h1>
+            <p className="text-xs text-neu-text-muted">
+              Describe your intent in plain language. We'll engineer the perfect prompt.
+            </p>
+          </div>
+
+          <ModelSelector value={targetModel} onChange={setTargetModel} />
+          <CategorySelector value={category} onChange={setCategory} />
+
+          <div>
+            <label className="block text-xs font-bold uppercase tracking-widest text-neu-text-muted mb-2">
+              Your Raw Intent
+            </label>
+            <textarea
+              value={rawPrompt}
+              onChange={(e) => setRawPrompt(e.target.value)}
+              placeholder="e.g., build me a realtime chat app with websockets..."
+              className="w-full h-40 bg-neu-bg shadow-neu-inset rounded-xl px-4 py-3
+                text-sm text-neu-text placeholder:text-neu-text-muted resize-none
+                border-none outline-none focus:ring-2 focus:ring-neu-accent transition-all"
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold uppercase tracking-widest text-neu-text-muted mb-2">
+              Custom Instructions (optional)
+            </label>
+            <textarea
+              value={customInstructions}
+              onChange={(e) => setCustomInstructions(e.target.value)}
+              placeholder="e.g., use TypeScript, prefer functional components, no external dependencies..."
+              className="w-full h-20 bg-neu-bg shadow-neu-inset rounded-xl px-4 py-3
+                text-sm text-neu-text placeholder:text-neu-text-muted resize-none
+                border-none outline-none focus:ring-2 focus:ring-neu-accent transition-all"
+            />
+          </div>
+
+          {error && (
+            <p className="text-xs text-red-400 bg-red-950 rounded-xl px-4 py-2">{error}</p>
+          )}
+
+          <button
+            onClick={handleEngineer}
+            disabled={loading || !rawPrompt.trim()}
+            className="w-full py-3 rounded-xl font-semibold text-sm transition-all
+              bg-neu-bg shadow-neu-btn text-neu-accent
+              hover:bg-neu-accent hover:text-white hover:shadow-none
+              disabled:opacity-40 disabled:cursor-not-allowed"
           >
-            Documentation
-          </a>
+            {loading ? "⏳ Engineering..." : "✨ Engineer Prompt"}
+          </button>
+        </div>
+
+        {/* Right Pane — Output */}
+        <div className="bg-neu-bg shadow-neu-raised rounded-2xl p-6 flex flex-col gap-5">
+          <PromptOutput result={result} loading={loading} />
+          <ExecutionPlan result={result} />
         </div>
       </main>
     </div>
