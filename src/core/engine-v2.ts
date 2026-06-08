@@ -27,17 +27,83 @@ async function detectCategory(client: LLMClient, rawPrompt: string): Promise<{ c
 }
 
 // ============================================================
-// JSON parsing helper
+// JSON parsing helpers
 // ============================================================
 
+/**
+ * Strip markdown code block wrappers (```json ... ``` or ``` ... ```)
+ * that LLMs sometimes wrap around JSON responses.
+ */
+function stripMarkdownCodeBlocks(raw: string): string {
+  // Match ```json\n...``` or ```\n...```
+  const match = raw.match(/```(?:json)?\s*\n?([\s\S]*?)```/);
+  if (match) return match[1].trim();
+  return raw.trim();
+}
+
 function parseJsonResponse<T>(raw: string): T | null {
+  const cleaned = stripMarkdownCodeBlocks(raw);
   try {
-    const jsonMatch = raw.match(/\{[\s\S]*\}/);
-    const jsonStr = jsonMatch ? jsonMatch[0] : raw;
+    const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
+    const jsonStr = jsonMatch ? jsonMatch[0] : cleaned;
     return JSON.parse(jsonStr.trim()) as T;
   } catch {
     return null;
   }
+}
+
+/**
+ * Clean the optimized prompt text — strip any JSON artifacts,
+ * markdown wrappers, or field labels that leaked into the output.
+ */
+function cleanPromptText(text: string): string {
+  let cleaned = stripMarkdownCodeBlocks(text);
+
+  // If it looks like a JSON object with optimizedPrompt field, extract it
+  const fieldMatch = cleaned.match(/"optimizedPrompt"\s*:\s*"([\s\S]*?)"\s*[,}]/);
+  if (fieldMatch) {
+    cleaned = fieldMatch[1]
+      .replace(/\\n/g, "\n")
+      .replace(/\\"/g, '"')
+      .replace(/\\\\/g, "\\");
+  }
+
+  // Strip leading/trailing quotes if the whole thing is wrapped
+  if (cleaned.startsWith('"') && cleaned.endsWith('"')) {
+    cleaned = cleaned.slice(1, -1);
+  }
+
+  return cleaned.trim();
+}
+
+/**
+ * Build a meaningful fallback explanation from discovery data
+ * when the LLM fails to return a valid JSON explanation.
+ */
+function buildFallbackExplanation(d: DomainDiscovery): string {
+  const parts: string[] = [];
+
+  if (d.keyFormulas?.length) {
+    parts.push(`Injected ${d.keyFormulas.length} critical formula(s)/pattern(s)`);
+  }
+  if (d.commonPitfalls?.length) {
+    parts.push(`avoided ${d.commonPitfalls.length} known pitfall(s)`);
+  }
+  if (d.edgeCases?.length) {
+    parts.push(`addressed ${d.edgeCases.length} edge case(s)`);
+  }
+  if (d.expertInsights?.length) {
+    parts.push(`incorporated ${d.expertInsights.length} expert insight(s)`);
+  }
+  if (d.missingContext?.length) {
+    parts.push(`filled in ${d.missingContext.length} missing specification(s)`);
+  }
+
+  if (parts.length === 0) {
+    return "Prompt has been structured for optimal model performance.";
+  }
+
+  return `Expert knowledge augmented: ${parts.join(", ")}. The prompt was restructured to incorporate domain-specific expertise that a generic rewrite would miss.`;
 }
 
 // ============================================================
@@ -101,12 +167,18 @@ async function generateAugmentedPrompt(
     suggestedSubtasks: string[];
   }>(response.text);
 
-  if (parsed?.optimizedPrompt) return parsed;
+  if (parsed?.optimizedPrompt) {
+    return {
+      ...parsed,
+      optimizedPrompt: cleanPromptText(parsed.optimizedPrompt),
+    };
+  }
 
-  // Fallback
+  // Fallback — clean the raw response and build explanation from discovery
+  const fallbackExplanation = buildFallbackExplanation(discovery);
   return {
-    optimizedPrompt: response.text,
-    explanation: "Prompt has been structured for optimal model performance.",
+    optimizedPrompt: cleanPromptText(response.text),
+    explanation: fallbackExplanation,
     requiredTools: [],
     executionStrategy: "sequential",
     suggestedSubtasks: [],

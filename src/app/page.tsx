@@ -145,9 +145,9 @@ export default function WorkspacePage() {
   return (
     <div className="min-h-screen flex flex-col">
       <NavBar />
-      <main className="flex-1 p-4 grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
+      <main className="flex-1 p-4 grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4 min-h-0">
         {/* Left Pane — Input */}
-        <div className="th-bg th-raised rounded-2xl p-6 flex flex-col gap-5 anim-fade-left">
+        <div className="th-bg th-raised rounded-2xl p-6 flex flex-col gap-5 anim-fade-left min-h-0">
           <div>
             <h1 className="text-lg font-bold th-text mb-1">Prompt Engineer</h1>
             <p className="text-xs th-muted">
@@ -236,7 +236,7 @@ export default function WorkspacePage() {
         </div>
 
         {/* Right Pane — Output */}
-        <div className="th-bg th-raised rounded-2xl p-6 flex flex-col gap-5 anim-fade-right anim-delay-1">
+        <div className="th-bg th-raised rounded-2xl p-6 flex flex-col gap-5 anim-fade-right anim-delay-1 min-h-0 overflow-auto">
           <PromptOutput
             result={result}
             loading={loading}

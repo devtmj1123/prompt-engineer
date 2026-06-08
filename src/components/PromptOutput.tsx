@@ -127,7 +127,7 @@ export function PromptOutput({ result, loading, refining = false, autoDetected =
       </div>
 
       <pre className="th-bg th-inset rounded-xl p-4 font-mono text-xs anim-scale-in
-        text-emerald-600 dark:text-emerald-400 overflow-auto max-h-64 leading-relaxed whitespace-pre-wrap">
+        text-emerald-600 dark:text-emerald-400 overflow-auto max-h-[32rem] leading-relaxed whitespace-pre-wrap break-words">
         {result.optimizedPrompt}
       </pre>
 
@@ -186,7 +186,7 @@ export function PromptOutput({ result, loading, refining = false, autoDetected =
 
       {/* Domain Discovery (v2) */}
       {result.discovery && hasDiscoveryContent(result.discovery) && (
-          <div className="th-bg th-raised rounded-xl p-4 anim-fade-up anim-delay-3">
+          <div className="th-bg th-raised rounded-xl p-4 anim-fade-up anim-delay-3 relative z-10">
             <button
               type="button"
               onClick={() => setShowDiscovery(!showDiscovery)}
@@ -202,7 +202,7 @@ export function PromptOutput({ result, loading, refining = false, autoDetected =
               />
             </button>
             {showDiscovery && (
-              <div className="mt-3 flex flex-col gap-3 anim-slide-down">
+              <div className="mt-3 flex flex-col gap-3 anim-fade">
                 {result.discovery.keyFormulas?.length > 0 && (
                   <DiscoverySection
                     icon={faBolt}
@@ -256,7 +256,7 @@ export function PromptOutput({ result, loading, refining = false, autoDetected =
 
       {/* Web Search Results */}
       {result.webSearchResults && result.webSearchResults.length > 0 && (
-        <div className="th-bg th-raised rounded-xl p-4 anim-fade-up anim-delay-3">
+        <div className="th-bg th-raised rounded-xl p-4 anim-fade-up anim-delay-3 relative z-10">
           <button
             type="button"
             onClick={() => setShowWebResults(!showWebResults)}
@@ -272,7 +272,7 @@ export function PromptOutput({ result, loading, refining = false, autoDetected =
             />
           </button>
           {showWebResults && (
-            <div className="mt-3 flex flex-col gap-2 anim-slide-down">
+            <div className="mt-3 flex flex-col gap-2 anim-fade">
               {result.webSearchResults.map((r, i) => (
                 <div key={i} className="th-bg th-inset rounded-lg px-3 py-2">
                   <p className="text-xs font-semibold th-text truncate">{r.title}</p>
