@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { engineerPrompt } from "@/core/engine";
+import { engineerPromptV2 } from "@/core/engine-v2";
 import type { RefineRequest } from "@/types";
 
 export async function POST(req: NextRequest) {
@@ -8,7 +8,7 @@ export async function POST(req: NextRequest) {
     if (!body.rawPrompt?.trim()) {
       return NextResponse.json({ error: "rawPrompt is required" }, { status: 400 });
     }
-    const result = await engineerPrompt(body);
+    const result = await engineerPromptV2(body);
     return NextResponse.json(result);
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Unknown error";

@@ -29,6 +29,17 @@ export interface PromptEngineerResult {
   category: PromptCategory;
   usage?: TokenUsage;
   webSearchResults?: WebSearchResult[];
+  discovery?: DomainDiscovery;
+}
+
+/** Step 1 output: expert-level domain knowledge extracted before prompt generation */
+export interface DomainDiscovery {
+  keyFormulas: string[];        // critical formulas, patterns, or algorithms
+  commonPitfalls: string[];     // mistakes 90% of developers/creators make
+  edgeCases: string[];          // boundary conditions and gotchas
+  expertInsights: string[];     // non-obvious tricks, optimizations, or best practices
+  suggestedStructure: string;   // recommended approach/architecture
+  missingContext: string[];     // what the user forgot to specify
 }
 
 export interface RefineRequest {

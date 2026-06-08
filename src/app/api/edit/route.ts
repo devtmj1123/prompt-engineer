@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { editPrompt } from "@/core/engine";
+import { editPromptV2 } from "@/core/engine-v2";
 import type { EditRequest } from "@/types";
 
 export async function POST(req: NextRequest) {
@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
     if (!body.instruction?.trim()) {
       return NextResponse.json({ error: "instruction is required" }, { status: 400 });
     }
-    const result = await editPrompt(body);
+    const result = await editPromptV2(body);
     return NextResponse.json(result);
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Unknown error";
