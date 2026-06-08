@@ -164,23 +164,31 @@ export default function WorkspacePage() {
           <CategorySelector value={category} onChange={setCategory} />
 
           {/* Web Search Toggle */}
-          <button
-            type="button"
-            onClick={() => setEnableWebSearch(!enableWebSearch)}
-            className={`flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer btn-press ${
-              enableWebSearch
-                ? "th-accent bg-[var(--accent)]/10 ring-1 ring-[var(--accent)]/30"
-                : "th-muted th-bg th-inset hover:th-raised"
-            }`}
-          >
-            <FontAwesomeIcon icon={faGlobe} className={`w-3.5 h-3.5 ${enableWebSearch ? "animate-pulse" : ""}`} />
-            <span>Web Search</span>
-            <span className={`ml-auto text-[10px] px-1.5 py-0.5 rounded-full ${
-              enableWebSearch ? "bg-[var(--accent)]/20 th-accent" : "th-inset th-muted"
-            }`}>
-              {enableWebSearch ? "ON" : "OFF"}
-            </span>
-          </button>
+          <div>
+            <button
+              type="button"
+              onClick={() => setEnableWebSearch(!enableWebSearch)}
+              className={`w-full flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer btn-press ${
+                enableWebSearch
+                  ? "th-accent bg-[var(--accent)]/10 ring-1 ring-[var(--accent)]/30"
+                  : "th-muted th-bg th-inset hover:th-raised"
+              }`}
+            >
+              <FontAwesomeIcon icon={faGlobe} className={`w-3.5 h-3.5 ${enableWebSearch ? "animate-pulse" : ""}`} />
+              <span>Web Search</span>
+              <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-amber-500/15 text-amber-500 font-bold uppercase tracking-wider">
+                Beta
+              </span>
+              <span className={`ml-auto text-[10px] px-1.5 py-0.5 rounded-full ${
+                enableWebSearch ? "bg-[var(--accent)]/20 th-accent" : "th-inset th-muted"
+              }`}>
+                {enableWebSearch ? "ON" : "OFF"}
+              </span>
+            </button>
+            <p className="text-[10px] th-muted mt-1.5 ml-1">
+              May not work accurately — uses free search, results can be incomplete or off-topic.
+            </p>
+          </div>
 
           <div>
             <label className="block text-xs font-bold uppercase tracking-widest th-muted mb-2">
