@@ -7,21 +7,29 @@ import { OpenAIClient } from "./openai";
 import { DeepSeekClient } from "./deepseek";
 import { XiaomiClient } from "./xiaomi";
 
-export function createClient(config: AppConfig, overrideProvider?: LLMProvider): LLMClient {
+export function createClient(
+  config: AppConfig,
+  overrideProvider?: LLMProvider,
+  overrideApiKey?: string
+): LLMClient {
   const provider = overrideProvider ?? config.defaultProvider;
   const providerConfig = config.providers[provider];
-  if (!providerConfig || !providerConfig.apiKey) {
-    throw new Error(`No API key configured for provider: ${provider}. Run 'prompt-eng config' to set it up.`);
+  const apiKey = overrideApiKey || providerConfig?.apiKey;
+
+  if (!apiKey) {
+    throw new Error(`No API key configured for provider: ${provider}. Set it in Settings or as an environment variable.`);
   }
+
+  const model = providerConfig?.model ?? "";
+
   switch (provider) {
-    case "groq":     return new GroqClient(providerConfig.apiKey, providerConfig.model);
-    case "cerebras": return new CerebrasClient(providerConfig.apiKey, providerConfig.model);
-    case "gemini":   return new GeminiClient(providerConfig.apiKey, providerConfig.model);
-    case "claude":   return new ClaudeClient(providerConfig.apiKey, providerConfig.model);
-    case "openai":   return new OpenAIClient(providerConfig.apiKey, providerConfig.model);
-    case "deepseek": return new DeepSeekClient(providerConfig.apiKey, providerConfig.model);
-    case "xiaomi":   return new XiaomiClient(providerConfig.apiKey, providerConfig.model);
+    case "groq":     return new GroqClient(apiKey, model);
+    case "cerebras": return new CerebrasClient(apiKey, model);
+    case "gemini":   return new GeminiClient(apiKey, model);
+    case "claude":   return new ClaudeClient(apiKey, model);
+    case "openai":   return new OpenAIClient(apiKey, model);
+    case "deepseek": return new DeepSeekClient(apiKey, model);
+    case "xiaomi":   return new XiaomiClient(apiKey, model);
     default:         throw new Error(`Unknown provider: ${provider}`);
   }
 }
-

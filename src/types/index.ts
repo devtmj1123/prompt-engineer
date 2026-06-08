@@ -35,6 +35,7 @@ export interface RefineRequest {
   rawPrompt: string;
   targetModel?: string;
   provider?: LLMProvider;
+  apiKey?: string;
   category?: PromptCategory;
   customInstructions?: string;
   enableWebSearch?: boolean;
@@ -46,6 +47,7 @@ export interface EditRequest {
   category: PromptCategory;
   targetModel: string;
   provider?: LLMProvider;
+  apiKey?: string;
 }
 
 

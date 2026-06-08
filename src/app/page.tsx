@@ -10,9 +10,25 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWandMagicSparkles, faSpinner, faGlobe } from "@fortawesome/free-solid-svg-icons";
 import type { PromptEngineerResult, PromptCategory } from "@/types";
 
+const LS_API_KEYS = "pe_api_keys";
+const LS_DEFAULT_PROVIDER = "pe_default_provider";
+
+function getStoredApiKey(provider: string): string {
+  try {
+    const stored = localStorage.getItem(LS_API_KEYS);
+    if (stored) {
+      const keys = JSON.parse(stored);
+      return keys[provider] || "";
+    }
+  } catch { /* ignore */ }
+  return "";
+}
+
 export default function WorkspacePage() {
   const [rawPrompt, setRawPrompt] = useState("");
-  const [provider, setProvider] = useState("groq");
+  const [provider, setProvider] = useState(() => {
+    try { return localStorage.getItem(LS_DEFAULT_PROVIDER) || "groq"; } catch { return "groq"; }
+  });
   const [targetModel, setTargetModel] = useState("");
   const [category, setCategory] = useState<PromptCategory | "auto">("auto");
   const [customInstructions, setCustomInstructions] = useState("");
@@ -68,12 +84,14 @@ export default function WorkspacePage() {
     setError(null);
     setResult(null);
     try {
+      const apiKey = getStoredApiKey(provider);
       const res = await fetch("/api/refine", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           rawPrompt,
           provider,
+          apiKey: apiKey || undefined,
           targetModel: targetModel || undefined,
           category: category === "auto" ? undefined : category,
           customInstructions: customInstructions || undefined,
@@ -96,6 +114,7 @@ export default function WorkspacePage() {
     setRefining(true);
     setError(null);
     try {
+      const apiKey = getStoredApiKey(provider);
       const res = await fetch("/api/edit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -105,6 +124,7 @@ export default function WorkspacePage() {
           category: result.category,
           targetModel: result.targetModel,
           provider,
+          apiKey: apiKey || undefined,
         }),
       });
       const data = await res.json();

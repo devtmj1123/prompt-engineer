@@ -23,6 +23,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
         properties: {
           rawPrompt: { type: "string", description: "The raw natural language intent to engineer." },
           provider: { type: "string", enum: ["groq", "cerebras", "gemini", "claude", "openai", "deepseek", "xiaomi"], description: "AI provider to use. Uses default provider if not specified." },
+          apiKey: { type: "string", description: "API key for the provider. Overrides config/env if specified." },
           targetModel: { type: "string", description: "Target AI model name (e.g. 'gpt-4o', 'claude-sonnet-4-20250514', 'gemini-2.0-flash'). Uses provider's default if not specified." },
           category: { type: "string", enum: ["coding", "image", "writing", "video"], description: "Prompt category. Auto-detected if not provided." },
           customInstructions: { type: "string", description: "Additional constraints or instructions to factor in." },
@@ -40,6 +41,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   const args = request.params.arguments as {
     rawPrompt: string;
     provider?: LLMProvider;
+    apiKey?: string;
     targetModel?: string;
     category?: PromptCategory;
     customInstructions?: string;

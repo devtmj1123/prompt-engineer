@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { NavBar } from "@/components/NavBar";
 import { Footer } from "@/components/Footer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGear, faFloppyDisk, faCheck } from "@fortawesome/free-solid-svg-icons";
+import { faGear, faFloppyDisk, faCheck, faShieldHalved } from "@fortawesome/free-solid-svg-icons";
 import { CustomSelect } from "@/components/CustomSelect";
 
 const PROVIDERS = [
@@ -16,34 +16,43 @@ const PROVIDERS = [
   { key: "xiaomi", label: "Xiaomi (Mimo)", defaultModel: "mimo-chat" },
 ];
 
+const LS_API_KEYS = "pe_api_keys";
+const LS_DEFAULT_PROVIDER = "pe_default_provider";
+
 export default function SettingsPage() {
   const [keys, setKeys] = useState<Record<string, string>>({});
   const [defaultProvider, setDefaultProvider] = useState("groq");
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
-    fetch("/api/config")
-      .then((r) => r.json())
-      .then((data) => {
-        setDefaultProvider(data.defaultProvider ?? "groq");
-        const k: Record<string, string> = {};
-        for (const p of PROVIDERS) {
-          k[p.key] = data.providers?.[p.key]?.apiKey === "***set***" ? "***set***" : "";
-        }
-        setKeys(k);
-      });
+    // Load from localStorage
+    try {
+      const stored = localStorage.getItem(LS_API_KEYS);
+      if (stored) setKeys(JSON.parse(stored));
+    } catch { /* ignore */ }
+
+    try {
+      const provider = localStorage.getItem(LS_DEFAULT_PROVIDER);
+      if (provider) setDefaultProvider(provider);
+    } catch { /* ignore */ }
   }, []);
 
-  async function handleSave() {
+  function handleSave() {
+    // Save API keys to localStorage
+    localStorage.setItem(LS_API_KEYS, JSON.stringify(keys));
+    localStorage.setItem(LS_DEFAULT_PROVIDER, defaultProvider);
+
+    // Also save to server config (best-effort, no-op on Vercel)
     const providers: Record<string, { apiKey: string; model: string }> = {};
     for (const p of PROVIDERS) {
       providers[p.key] = { apiKey: keys[p.key] ?? "", model: p.defaultModel };
     }
-    await fetch("/api/config", {
+    fetch("/api/config", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ defaultProvider, providers }),
-    });
+    }).catch(() => {}); // best-effort
+
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   }
@@ -59,6 +68,15 @@ export default function SettingsPage() {
             <FontAwesomeIcon icon={faGear} className="w-4 h-4 th-accent" />
             <span>Settings</span>
           </h1>
+
+          {/* Security notice */}
+          <div className="th-inset rounded-xl px-4 py-3 flex items-start gap-2.5">
+            <FontAwesomeIcon icon={faShieldHalved} className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" />
+            <p className="text-xs th-muted leading-relaxed">
+              API keys are stored <strong className="th-text">locally in your browser</strong> (localStorage).
+              They are sent directly to the AI provider with each request — we never store or see your keys on the server.
+            </p>
+          </div>
 
           <div>
             <CustomSelect
@@ -76,7 +94,7 @@ export default function SettingsPage() {
               </label>
               <input
                 type="password"
-                placeholder={keys[p.key] === "***set***" ? "API Key is set (enter to overwrite)" : `Enter ${p.label} API key...`}
+                placeholder={keys[p.key] ? "API Key is set (enter to overwrite)" : `Enter ${p.label} API key...`}
                 value={keys[p.key] ?? ""}
                 onChange={(e) => setKeys((k) => ({ ...k, [p.key]: e.target.value }))}
                 className="w-full th-bg th-inset rounded-xl px-4 py-3 text-sm
@@ -101,4 +119,3 @@ export default function SettingsPage() {
     </div>
   );
 }
-
