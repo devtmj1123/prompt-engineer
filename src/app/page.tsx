@@ -7,7 +7,7 @@ import { PromptOutput } from "@/components/PromptOutput";
 import { ExecutionPlan } from "@/components/ExecutionPlan";
 import { Footer } from "@/components/Footer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faWandMagicSparkles, faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { faWandMagicSparkles, faSpinner, faGlobe } from "@fortawesome/free-solid-svg-icons";
 import type { PromptEngineerResult, PromptCategory } from "@/types";
 
 export default function WorkspacePage() {
@@ -16,6 +16,7 @@ export default function WorkspacePage() {
   const [targetModel, setTargetModel] = useState("");
   const [category, setCategory] = useState<PromptCategory | "auto">("auto");
   const [customInstructions, setCustomInstructions] = useState("");
+  const [enableWebSearch, setEnableWebSearch] = useState(false);
   const [result, setResult] = useState<PromptEngineerResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [refining, setRefining] = useState(false);
@@ -32,6 +33,7 @@ export default function WorkspacePage() {
         setTargetModel(item.targetModel ?? "");
         setCategory(item.category ?? "auto");
         setCustomInstructions(item.customInstructions ?? "");
+        setEnableWebSearch(item.enableWebSearch ?? false);
         setResult(item.result ?? null);
         localStorage.removeItem("prompt_engineer_load_history");
       }
@@ -47,6 +49,7 @@ export default function WorkspacePage() {
         timestamp: Date.now(),
         rawPrompt,
         provider,
+        enableWebSearch,
         targetModel: res.targetModel,
         category: res.category,
         customInstructions: customInst,
@@ -74,6 +77,7 @@ export default function WorkspacePage() {
           targetModel: targetModel || undefined,
           category: category === "auto" ? undefined : category,
           customInstructions: customInstructions || undefined,
+          enableWebSearch,
         }),
       });
       const data = await res.json();
@@ -138,6 +142,25 @@ export default function WorkspacePage() {
             onModelChange={setTargetModel}
           />
           <CategorySelector value={category} onChange={setCategory} />
+
+          {/* Web Search Toggle */}
+          <button
+            type="button"
+            onClick={() => setEnableWebSearch(!enableWebSearch)}
+            className={`flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer btn-press ${
+              enableWebSearch
+                ? "th-accent bg-[var(--accent)]/10 ring-1 ring-[var(--accent)]/30"
+                : "th-muted th-bg th-inset hover:th-raised"
+            }`}
+          >
+            <FontAwesomeIcon icon={faGlobe} className={`w-3.5 h-3.5 ${enableWebSearch ? "animate-pulse" : ""}`} />
+            <span>Web Search</span>
+            <span className={`ml-auto text-[10px] px-1.5 py-0.5 rounded-full ${
+              enableWebSearch ? "bg-[var(--accent)]/20 th-accent" : "th-inset th-muted"
+            }`}>
+              {enableWebSearch ? "ON" : "OFF"}
+            </span>
+          </button>
 
           <div>
             <label className="block text-xs font-bold uppercase tracking-widest th-muted mb-2">

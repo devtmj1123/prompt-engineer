@@ -8,6 +8,12 @@ export interface TokenUsage {
   totalTokens: number;
 }
 
+export interface WebSearchResult {
+  title: string;
+  snippet: string;
+  url: string;
+}
+
 export interface LLMResponse {
   text: string;
   usage?: TokenUsage;
@@ -22,6 +28,7 @@ export interface PromptEngineerResult {
   targetModel: string;
   category: PromptCategory;
   usage?: TokenUsage;
+  webSearchResults?: WebSearchResult[];
 }
 
 export interface RefineRequest {
@@ -30,6 +37,7 @@ export interface RefineRequest {
   provider?: LLMProvider;
   category?: PromptCategory;
   customInstructions?: string;
+  enableWebSearch?: boolean;
 }
 
 export interface EditRequest {

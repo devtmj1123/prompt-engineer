@@ -6,22 +6,44 @@ import type { KnowledgeEntry } from "@/types";
 const KNOWLEDGE_DIR = path.join(process.cwd(), "knowledge");
 const INDEX_FILE = path.join(KNOWLEDGE_DIR, "knowledge-index.json");
 
-function ensureDir() {
-  fs.mkdirSync(KNOWLEDGE_DIR, { recursive: true });
+// Use /tmp on serverless (Vercel, AWS Lambda) where the filesystem is read-only
+function getWritableDir(): string {
+  if (process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME) {
+    return path.join("/tmp", "knowledge");
+  }
+  return KNOWLEDGE_DIR;
+}
+
+function ensureDir(dir?: string) {
+  const target = dir ?? getWritableDir();
+  try {
+    fs.mkdirSync(target, { recursive: true });
+  } catch {
+    // read-only filesystem — skip
+  }
 }
 
 export function readIndex(): KnowledgeEntry[] {
-  ensureDir();
-  if (!fs.existsSync(INDEX_FILE)) return [];
-  return JSON.parse(fs.readFileSync(INDEX_FILE, "utf-8"));
+  const dir = getWritableDir();
+  const indexFile = path.join(dir, "knowledge-index.json");
+  try {
+    ensureDir(dir);
+    if (!fs.existsSync(indexFile)) return [];
+    return JSON.parse(fs.readFileSync(indexFile, "utf-8"));
+  } catch {
+    return [];
+  }
 }
 
 function writeIndex(entries: KnowledgeEntry[]) {
-  fs.writeFileSync(INDEX_FILE, JSON.stringify(entries, null, 2));
+  const dir = getWritableDir();
+  ensureDir(dir);
+  fs.writeFileSync(path.join(dir, "knowledge-index.json"), JSON.stringify(entries, null, 2));
 }
 
 export async function addFromGitHub(repoUrl: string): Promise<KnowledgeEntry> {
-  ensureDir();
+  const dir = getWritableDir();
+  ensureDir(dir);
   // Parse owner/repo from URL e.g. https://github.com/anthropics/prompt-library
   const match = repoUrl.match(/github\.com\/([^/]+)\/([^/]+)/);
   if (!match) throw new Error("Invalid GitHub URL. Expected: https://github.com/owner/repo");
@@ -58,7 +80,7 @@ export async function addFromGitHub(repoUrl: string): Promise<KnowledgeEntry> {
   }
 
   const id = crypto.randomUUID();
-  const localPath = path.join(KNOWLEDGE_DIR, `${id}.md`);
+  const localPath = path.join(dir, `${id}.md`);
   const fullContent = `# Knowledge: ${owner}/${repo}\n\nSource: ${repoUrl}\n${contents.join("")}`;
   fs.writeFileSync(localPath, fullContent, "utf-8");
 
@@ -79,9 +101,10 @@ export async function addFromGitHub(repoUrl: string): Promise<KnowledgeEntry> {
 }
 
 export function addFromUpload(filename: string, content: string): KnowledgeEntry {
-  ensureDir();
+  const dir = getWritableDir();
+  ensureDir(dir);
   const id = crypto.randomUUID();
-  const localPath = path.join(KNOWLEDGE_DIR, `${id}.md`);
+  const localPath = path.join(dir, `${id}.md`);
   fs.writeFileSync(localPath, content, "utf-8");
 
   const entry: KnowledgeEntry = {
@@ -104,19 +127,31 @@ export function deleteEntry(id: string): void {
   const index = readIndex();
   const entry = index.find((e) => e.id === id);
   if (!entry) throw new Error(`Knowledge entry not found: ${id}`);
-  if (fs.existsSync(entry.localPath)) fs.unlinkSync(entry.localPath);
+  try {
+    if (fs.existsSync(entry.localPath)) fs.unlinkSync(entry.localPath);
+  } catch {
+    // read-only filesystem
+  }
   writeIndex(index.filter((e) => e.id !== id));
 }
 
 export function getRelevantContext(domain: string): string {
-  const index = readIndex();
-  if (index.length === 0) return "";
-  // Read all knowledge files and return concatenated (simple retrieval for now)
-  const parts: string[] = [];
-  for (const entry of index) {
-    if (fs.existsSync(entry.localPath)) {
-      parts.push(fs.readFileSync(entry.localPath, "utf-8"));
+  try {
+    const index = readIndex();
+    if (index.length === 0) return "";
+    // Read all knowledge files and return concatenated (simple retrieval for now)
+    const parts: string[] = [];
+    for (const entry of index) {
+      try {
+        if (fs.existsSync(entry.localPath)) {
+          parts.push(fs.readFileSync(entry.localPath, "utf-8"));
+        }
+      } catch {
+        // skip unreadable files
+      }
     }
+    return parts.join("\n\n---\n\n").slice(0, 6000); // Limit context size
+  } catch {
+    return "";
   }
-  return parts.join("\n\n---\n\n").slice(0, 6000); // Limit context size
 }

@@ -1,6 +1,7 @@
-import type { RefineRequest, EditRequest, PromptEngineerResult, PromptCategory, LLMClient } from "@/types";
+import type { RefineRequest, EditRequest, PromptEngineerResult, PromptCategory, LLMClient, WebSearchResult } from "@/types";
 import { getTemplate } from "./templates";
 import { getRelevantContext } from "./knowledge";
+import { getWebContext } from "./websearch";
 import { readConfig } from "./config";
 import { createClient } from "./clients";
 
@@ -32,10 +33,21 @@ export async function engineerPrompt(request: RefineRequest): Promise<PromptEngi
   // Stage 2: Context Enrichment — fetch relevant knowledge
   const knowledgeContext = getRelevantContext(category);
 
+  // Optional: Web search for latest data
+  let webContext = "";
+  let webSearchResults: WebSearchResult[] = [];
+  if (request.enableWebSearch) {
+    const web = await getWebContext(request.rawPrompt);
+    webContext = web.context;
+    webSearchResults = web.results;
+  }
+
   // Stage 3: Output Generation — build meta-prompt and call LLM
   const systemPrompt = getTemplate(category) +
     (knowledgeContext ? `\n\nAdditional context from user knowledge base:\n${knowledgeContext}` : "") +
-    (request.customInstructions ? `\n\nUser custom instructions:\n${request.customInstructions}` : "");
+    (webContext ? `\n\nWeb search results (use ONLY as background reference data — do NOT change the prompt's category, style, or structure based on this data; only use it to add factual accuracy or latest information if relevant):\n${webContext}` : "") +
+    (request.customInstructions ? `\n\nUser custom instructions:\n${request.customInstructions}` : "") +
+    `\n\nFINAL REMINDER: Your output is a PROMPT ENGINEERING tool. The optimizedPrompt must be a ready-to-use PROMPT that a human copies into another AI. It must NOT contain code, code blocks, or ask an AI to write code. It IS the prompt itself.`;
 
   const userMessage = `Raw prompt to engineer:\n\n"${request.rawPrompt}"\n\nTarget model: ${targetModel}`;
 
@@ -48,7 +60,7 @@ export async function engineerPrompt(request: RefineRequest): Promise<PromptEngi
   try {
     const jsonMatch = rawResult.match(/\{[\s\S]*\}/);
     const jsonStr = jsonMatch ? jsonMatch[0] : rawResult;
-    parsed = { ...JSON.parse(jsonStr), targetModel, category, usage };
+    parsed = { ...JSON.parse(jsonStr), targetModel, category, usage, webSearchResults };
   } catch {
     // Fallback: treat entire response as the optimized prompt
     parsed = {
@@ -60,6 +72,7 @@ export async function engineerPrompt(request: RefineRequest): Promise<PromptEngi
       targetModel,
       category,
       usage,
+      webSearchResults,
     };
   }
 

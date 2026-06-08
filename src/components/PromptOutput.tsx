@@ -2,7 +2,7 @@
 import type { PromptEngineerResult } from "@/types";
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCopy, faCheck, faLightbulb, faWandMagicSparkles, faSpinner, faBatteryFull } from "@fortawesome/free-solid-svg-icons";
+import { faCopy, faCheck, faLightbulb, faWandMagicSparkles, faSpinner, faBatteryFull, faGlobe, faChevronDown, faExternalLink } from "@fortawesome/free-solid-svg-icons";
 
 interface Props {
   result: PromptEngineerResult | null;
@@ -16,6 +16,7 @@ export function PromptOutput({ result, loading, refining = false, autoDetected =
   const [copied, setCopied] = useState(false);
   const [showRefineInput, setShowRefineInput] = useState(false);
   const [refineInstruction, setRefineInstruction] = useState("");
+  const [showWebResults, setShowWebResults] = useState(false);
 
   async function handleCopy() {
     if (!result) return;
@@ -70,6 +71,12 @@ export function PromptOutput({ result, loading, refining = false, autoDetected =
           {autoDetected && (
             <span className="text-[10px] px-2.5 py-0.5 rounded-full th-accent bg-[var(--accent)]/10 font-semibold capitalize">
               Detected: {result.category}
+            </span>
+          )}
+          {result.webSearchResults && result.webSearchResults.length > 0 && (
+            <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-blue-500/10 text-blue-400 dark:text-blue-300 font-semibold flex items-center gap-1">
+              <FontAwesomeIcon icon={faGlobe} className="w-2.5 h-2.5" />
+              Web: {result.webSearchResults.length} results
             </span>
           )}
         </div>
@@ -140,6 +147,49 @@ export function PromptOutput({ result, loading, refining = false, autoDetected =
         </p>
         <p className="text-xs th-muted leading-relaxed">{result.explanation}</p>
       </div>
+
+      {/* Web Search Results */}
+      {result.webSearchResults && result.webSearchResults.length > 0 && (
+        <div className="th-bg th-raised rounded-xl p-4 anim-fade-up anim-delay-3">
+          <button
+            type="button"
+            onClick={() => setShowWebResults(!showWebResults)}
+            className="w-full flex items-center justify-between text-xs font-bold uppercase tracking-widest th-muted hover:th-text transition-colors cursor-pointer"
+          >
+            <span className="flex items-center gap-1.5">
+              <FontAwesomeIcon icon={faGlobe} className="w-3.5 h-3.5 text-blue-400" />
+              <span>Web Sources Used ({result.webSearchResults.length})</span>
+            </span>
+            <FontAwesomeIcon
+              icon={faChevronDown}
+              className={`w-3 h-3 transition-transform duration-200 ${showWebResults ? "rotate-180" : ""}`}
+            />
+          </button>
+          {showWebResults && (
+            <div className="mt-3 flex flex-col gap-2 anim-slide-down">
+              {result.webSearchResults.map((r, i) => (
+                <div key={i} className="th-bg th-inset rounded-lg px-3 py-2">
+                  <p className="text-xs font-semibold th-text truncate">{r.title}</p>
+                  {r.snippet && (
+                    <p className="text-[11px] th-muted mt-0.5 line-clamp-2">{r.snippet}</p>
+                  )}
+                  {r.url && (
+                    <a
+                      href={r.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[10px] text-blue-400 hover:underline mt-1 inline-flex items-center gap-1 truncate max-w-full"
+                    >
+                      <FontAwesomeIcon icon={faExternalLink} className="w-2.5 h-2.5 shrink-0" />
+                      <span className="truncate">{r.url}</span>
+                    </a>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

@@ -34,6 +34,9 @@ yarn-error.log*
 .env*
 !.env.example
 
+# encrypted config (contains API keys)
+.prompt-eng-config.json
+
 # vercel
 .vercel
 
